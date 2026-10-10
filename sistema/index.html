@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="pt-AO">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Centro Monte Moriá — Sistema de Gestão de Membros">
+<meta name="color-scheme" content="light dark">
+<title>Centro Monte Moriá · Sistema de Gestão de Membros</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div id="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="mark"><img id="brand-logo" alt="ADP"></div>
+      <h1>Centro Monte Moriá</h1>
+      <p>Assembleia de Deus Pentecostal &middot; Betel-Luanda</p>
+    </div>
+    <nav class="nav" id="nav">
+      <div class="sec-label">Visão Geral</div>
+      <button data-tab="dashboard" class="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+        Painel
+      </button>
+      <div class="sec-label">Membros</div>
+      <button data-tab="database">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg>
+        Base de Dados
+      </button>
+      <button data-tab="aniversariantes">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>
+        Aniversariantes
+      </button>
+      <button data-tab="ficha">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="1.5"/><circle cx="12" cy="9" r="2.3"/><path d="M8 16c0-2 1.8-3.2 4-3.2s4 1.2 4 3.2"/></svg>
+        Ficha Individual
+      </button>
+      <button data-tab="reports">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4"/><path d="M9 13h6M9 17h6M9 9h2"/></svg>
+        Relatórios
+      </button>
+      <div class="sec-label">Administração</div>
+      <button data-tab="financas">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 20h18"/><path d="M6 20V10M12 20V4M18 20v13"/></svg>
+        Finanças
+      </button>
+      <button data-tab="registos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-4.6-9.5-9.1C1 8.5 2.7 5 6.2 5c2 0 3.3 1 4.3 2.4l1.5 2 1.5-2C14.5 6 15.8 5 17.8 5c3.5 0 5.2 3.5 3.7 6.9C19 16.4 12 21 12 21Z"/></svg>
+        Disciplina &amp; Visitantes
+      </button>
+      <button data-tab="qualidade">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2 3 6v6c0 5 4 8.5 9 10 5-1.5 9-5 9-10V6z"/><path d="M9 12l2 2 4-4"/></svg>
+        Qualidade dos Dados
+      </button>
+      <div class="sec-label">Atividade da Igreja</div>
+      <button data-tab="cultos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v6l4 2"/><circle cx="12" cy="13" r="8"/></svg>
+        Estatística do Culto
+      </button>
+      <button data-tab="inventario">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7l9-4 9 4-9 4-9-4Z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg>
+        Inventário
+      </button>
+      <button data-tab="atividades">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="1.5"/><path d="M3 9h18M8 2v4M16 2v4"/><path d="M8 14l2.5 2.5L16 11"/></svg>
+        Atividades
+      </button>
+      <button data-tab="organigrama">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="9" y="3" width="6" height="5" rx="1"/><rect x="3" y="16" width="6" height="5" rx="1"/><rect x="15" y="16" width="6" height="5" rx="1"/><path d="M12 8v4M6 16v-2h12v2"/></svg>
+        Organigrama
+      </button>
+      <button data-tab="secretaria">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h6M10 16h6M10 8h2"/></svg>
+        Secretaria
+      </button>
+      <div class="sec-label">Suporte</div>
+      <button data-tab="ajuda">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.2a2.5 2.5 0 0 1 4.8 1c0 1.7-2.3 1.7-2.3 3.3"/><path d="M12 17.2h.01"/></svg>
+        Tutorial / Ajuda
+      </button>
+      <button data-tab="lixeira">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>
+        Lixeira
+      </button>
+      <button data-tab="utilizadores">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.3"/><path d="M3 20c0-3.3 2.7-5.8 6-5.8s6 2.5 6 5.8"/><circle cx="17.5" cy="8.5" r="2.3"/><path d="M16 14.3c2.5.4 4 2.3 4 5.2"/></svg>
+        Utilizadores
+      </button>
+      <button data-tab="listas">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h10"/><circle cx="20" cy="18" r="1.6"/></svg>
+        Listas &amp; Categorias
+      </button>
+      <button data-tab="aparencia">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 3a6 6 0 000 12 3 3 0 010 6"/><circle cx="8.5" cy="10.5" r="1"/><circle cx="12" cy="8" r="1"/><circle cx="15.5" cy="10.5" r="1"/></svg>
+        Aparência
+      </button>
+    </nav>
+    <div class="sidebar-foot">
+      <div id="session-indicator" class="u-d51702"></div>
+      <div id="sidebar-foot-count">v9 · atualizado</div>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- ================= DASHBOARD ================= -->
+    <section class="section active" id="sec-dashboard">
+      <div class="topbar">
+        <div>
+          <h2>Painel Geral</h2>
+          <div class="sub">Panorâmica em tempo real da base de dados de membros</div>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn ghost sm" id="btn-customize-dash">🎨 Personalizar Painel</button>
+          <button class="btn ghost sm" id="btn-export-json">Exportar cópia (.json)</button>
+          <button class="btn gold sm" id="btn-goto-add">+ Novo Membro</button>
+        </div>
+      </div>
+
+      <div class="u-be2540 toolbar card">
+        <select id="f-igreja"><option value="">Igreja / Centro — todas</option></select>
+        <select id="f-situacao"><option value="">Situação — todas</option></select>
+        <select id="f-departamento"><option value="">Departamento — todos</option></select>
+        <select id="f-genero"><option value="">Género — todos</option></select>
+        <div class="spacer"></div>
+        <button class="btn ghost sm" id="f-clear">Limpar filtros</button>
+      </div>
+
+      <div class="kpi-grid" id="kpi-grid"></div>
+
+      <div class="u-8e8697 card" id="dash-alerts"></div>
+
+      <div class="u-8e8697 grid2">
+        <div class="card">
+          <h3 class="u-1db6be">Membros por Faixa Etária</h3>
+          <div class="chart-wrap"><canvas id="chart-faixa"></canvas></div>
+        </div>
+        <div class="card">
+          <h3 class="u-1db6be">Distribuição por Género</h3>
+          <div class="chart-wrap"><canvas id="chart-genero"></canvas></div>
+        </div>
+      </div>
+
+      <div class="u-8e8697 grid2">
+        <div class="card">
+          <h3 class="u-1db6be">Membros por Departamento</h3>
+          <div class="chart-wrap tall"><canvas id="chart-depto"></canvas></div>
+        </div>
+        <div class="card">
+          <h3 class="u-1db6be">Situação dos Membros</h3>
+          <div class="chart-wrap tall"><canvas id="chart-situacao"></canvas></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="u-1db6be">Finanças — Entradas vs. Saídas (mensal)</h3>
+        <div class="chart-wrap tall"><canvas id="chart-financas-mini"></canvas></div>
+      </div>
+
+      <div id="dash-custom-charts" class="u-b0043e grid2"></div>
+    </section>
+
+    <!-- ================= BASE DE DADOS ================= -->
+    <section class="section" id="sec-database">
+      <div class="topbar">
+        <div>
+          <h2>Base de Dados de Membros</h2>
+          <div class="sub"><span id="db-count">0</span> registos — pesquisar, filtrar, editar e adicionar membros</div>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn ghost sm" id="btn-export-csv">Exportar CSV</button>
+          <label class="u-b202c6 btn ghost sm">Importar backup (substituir)
+            <input type="file" id="file-import" accept=".json" class="u-cb4589">
+          </label>
+          <button class="btn ghost sm" id="btn-merge-import">+ Base de Dados Extra</button>
+          <button class="btn ghost sm" id="btn-mass-add">+ Adicionar em Massa</button>
+          <button class="btn gold sm" id="btn-add-member">+ Novo Membro</button>
+        </div>
+      </div>
+
+      <div class="u-2f2c14 note" id="db-alert-dup"></div>
+
+      <div class="u-617963 toolbar card">
+        <input type="text" id="db-search" placeholder="Pesquisar por nome, telefone, BI ou nº de cartão…">
+        <select id="db-f-situacao"><option value="">Situação — todas</option></select>
+        <select id="db-f-departamento"><option value="">Departamento — todos</option></select>
+        <select id="db-f-genero"><option value="">Género — todos</option></select>
+        <select id="db-f-faixa"><option value="">Faixa etária — todas</option></select>
+        <div class="spacer"></div>
+        <button class="btn ghost sm" id="db-f-clear">Limpar</button>
+      </div>
+
+      <div class="tbl-scroll">
+        <table class="data-table" id="tbl-members">
+          <thead>
+            <tr>
+              <th data-sort="nome">Nome</th>
+              <th data-sort="genero">Género</th>
+              <th data-sort="idade">Idade</th>
+              <th data-sort="cargo">Cargo</th>
+              <th data-sort="departamento">Departamento</th>
+              <th data-sort="situacao">Situação</th>
+              <th data-sort="tel">Contacto</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tbl-members-body"></tbody>
+        </table>
+      </div>
+      <div class="pager" id="db-pager"></div>
+    </section>
+
+    <!-- ================= ANIVERSARIANTES ================= -->
+    <section class="section" id="sec-aniversariantes">
+      <div class="topbar"><div><h2>Aniversariantes</h2><div class="sub">Agenda de aniversários com alertas para hoje e próximos dias</div></div><div class="topbar-actions"><button class="btn ghost sm" id="btn-aniv-print">Imprimir Lista</button></div></div>
+      <div class="u-8e8697 toolbar card">
+        <select id="aniv-month"><option value="current">Mês atual</option><option value="all">Todos os meses</option></select>
+        <select id="aniv-window"><option value="0">Mês inteiro</option><option value="7">Próximos 7 dias</option><option value="30">Próximos 30 dias</option></select>
+        <select id="aniv-igreja"><option value="">Igreja/Centro — todas</option></select>
+        <select id="aniv-depto"><option value="">Departamento — todos</option></select>
+        <div class="spacer"></div><button class="btn ghost sm" id="aniv-clear">Limpar</button>
+      </div>
+      <div id="aniv-alerts" class="u-8e8697 card"></div>
+      <div class="tbl-scroll"><table class="data-table"><thead><tr><th>Dia</th><th>Nome</th><th>Idade</th><th>Igreja/Centro</th><th>Departamento</th><th>Contacto</th></tr></thead><tbody id="aniv-body"></tbody></table></div>
+    </section>
+
+    <!-- ================= FICHA INDIVIDUAL ================= -->
+    <section class="section" id="sec-ficha">
+      <div class="topbar">
+        <div>
+          <h2>Ficha Individual do Membro</h2>
+          <div class="sub">Selecione um membro para gerar a ficha, pronta a imprimir em A4</div>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn gold sm" id="btn-print-ficha" disabled>Imprimir Ficha</button>
+        </div>
+      </div>
+
+      <div class="card" id="ficha-picker">
+        <div class="u-ede874 fields-grid">
+          <div class="u-e7ec54 field">
+            <label>Procurar Membro</label>
+            <div class="autocomplete-box">
+              <input type="text" id="ficha-search" placeholder="Escreva o nome do membro…">
+              <div class="autocomplete-list" id="ficha-suggest"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="ficha-empty" class="card empty">
+        <div class="display">Nenhum membro selecionado</div>
+        Utilize a pesquisa acima para escolher um membro e visualizar a respetiva ficha.
+      </div>
+
+      <div id="print-area" class="u-df74e8">
+        <div class="ficha-sheet hidden" id="ficha-sheet"></div>
+      </div>
+    </section>
+
+    <!-- ================= RELATÓRIOS ================= -->
+    <section class="section" id="sec-reports">
+      <div class="topbar">
+        <div>
+          <h2>Relatórios</h2>
+          <div class="sub">Gere relatórios interativos a partir da base de dados</div>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn ghost sm" id="btn-report-csv" disabled>Exportar CSV</button>
+          <button class="btn gold sm" id="btn-report-print" disabled>Imprimir</button>
+        </div>
+      </div>
+
+      <div class="u-8e8697 card">
+        <div class="u-e7ec54 toolbar">
+          <select id="report-type">
+            <option value="geral">Lista de Membros — Filtros Avançados</option>
+            <option value="aniversario">Aniversariantes do Mês</option>
+            <option value="disciplina">Registo de Disciplina</option>
+            <option value="visitantes">Visitantes com Guia</option>
+            <option value="cultos">Estatística dos Cultos</option>
+            <option value="inventario">Inventário</option>
+            <option value="atividades">Atividades (Programadas/Realizadas)</option>
+            <option value="congregacoes">Finanças por Congregação</option>
+          </select>
+          <select id="report-filter" class="hidden"></select>
+          <div class="spacer"></div>
+          <button class="btn ghost sm" id="btn-report-gerar">Gerar Relatório</button>
+        </div>
+        <div id="report-adv-filters" class="u-ce846e fields-grid c3">
+          <div class="field"><label>Género</label><select id="adv-genero"><option value="">Todos</option></select></div>
+          <div class="field"><label>Situação</label><select id="adv-situacao"><option value="">Todas</option></select></div>
+          <div class="field"><label>Departamento</label><select id="adv-departamento"><option value="">Todos</option></select></div>
+          <div class="field"><label>Cargo</label><select id="adv-cargo"><option value="">Todos</option></select></div>
+          <div class="field"><label>Função</label><select id="adv-funcao"><option value="">Todas</option></select></div>
+          <div class="field"><label>Faixa Etária</label><select id="adv-faixa"><option value="">Todas</option></select></div>
+          <div class="field"><label>Igreja / Centro</label><select id="adv-igreja"><option value="">Todas</option></select></div>
+          <div class="field"><label>Estado Civil</label><select id="adv-estadocivil"><option value="">Todos</option></select></div>
+          <div class="field"><label>Província</label><select id="adv-provincia"><option value="">Todas</option></select></div>
+          <div class="u-bbe59a field"><button class="btn ghost sm" id="btn-adv-clear" type="button">Limpar Filtros Avançados</button></div>
+        </div>
+      </div>
+
+      <div id="report-output"></div>
+    </section>
+
+    <!-- ================= FINANÇAS ================= -->
+    <section class="section" id="sec-financas">
+      <div class="topbar">
+        <div>
+          <h2>Finanças</h2>
+          <div class="sub">Registo mensal de entradas e saídas — editável</div>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn ghost sm" id="btn-financas-unlock">🔒 Editar Valores</button>
+          <button class="btn ghost sm" id="btn-financas-print">Imprimir</button>
+        </div>
+      </div>
+
+      <div class="kpi-grid" id="financas-kpi"></div>
+
+      <div class="tabs-inline">
+        <button data-fintab="sede" class="active">Sede — Centro Monte Moriá</button>
+        <button data-fintab="congregacoes">Congregações</button>
+        <button data-fintab="comparativo">Comparativo</button>
+      </div>
+
+      <div id="fin-sede">
+        <div class="u-2a4dac grid2">
+          <div class="card">
+            <div class="tbl-scroll">
+              <table class="data-table" id="tbl-financas">
+                <thead><tr><th>Mês</th><th>Entradas (Kz)</th><th>Saídas (Kz)</th><th>Saldo (Kz)</th></tr></thead>
+                <tbody id="tbl-financas-body"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card">
+            <h3 class="u-1db6be">Entradas vs. Saídas — Sede</h3>
+            <div class="chart-wrap tall"><canvas id="chart-financas"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="fin-congregacoes" class="hidden">
+        <div class="u-617963 card">
+          <div class="u-e7ec54 toolbar">
+            <select id="cong-select"></select>
+            <button class="btn ghost sm" id="btn-cong-add">+ Nova Congregação</button>
+            <button class="btn danger sm" id="btn-cong-remove">Remover Congregação</button>
+          </div>
+        </div>
+        <div class="u-2a4dac grid2">
+          <div class="card">
+            <div class="tbl-scroll">
+              <table class="data-table" id="tbl-cong">
+                <thead><tr><th>Mês</th><th>Entradas (Kz)</th><th>Saídas (Kz)</th><th>Saldo (Kz)</th></tr></thead>
+                <tbody id="tbl-cong-body"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card">
+            <h3 class="u-1db6be">Entradas vs. Saídas — <span id="cong-chart-title"></span></h3>
+            <div class="chart-wrap tall"><canvas id="chart-cong"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="fin-comparativo" class="hidden">
+        <div class="card">
+          <h3 class="u-1db6be">Total de Entradas por Congregação (incl. Sede)</h3>
+          <div class="chart-wrap tall"><canvas id="chart-fin-comparativo"></canvas></div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ================= DISCIPLINA, VISITANTES & CONVERTIDOS ================= -->
+    <section class="section" id="sec-registos">
+      <div class="topbar">
+        <div><h2>Disciplina, Visitantes &amp; Convertidos</h2><div class="sub">Registos operacionais com filtros e edição protegida por palavra-passe de Admin</div></div>
+        <div class="topbar-actions"><span class="badge muted" id="lock-indicator-registos">🔒 Edição protegida</span></div>
+      </div>
+      <div class="tabs-inline">
+        <button data-sub="disc" class="active">Membros sob Disciplina</button>
+        <button data-sub="vis">Visitantes com Guia</button>
+        <button data-sub="conv">Convertidos</button>
+      </div>
+      <div id="sub-disc">
+        <div class="u-617963 toolbar card">
+          <input id="disc-filter-text" placeholder="Pesquisar nome, motivo, igreja ou observação…">
+          <select id="disc-filter-igreja"><option value="">Igreja/Cong. — todas</option></select>
+          <select id="disc-filter-estado"><option value="">Estado — todos</option></select>
+          <input type="date" id="disc-filter-de"><input type="date" id="disc-filter-ate">
+          <button class="btn ghost sm" id="disc-filter-clear">Limpar</button><div class="spacer"></div><button class="btn ghost sm" id="btn-add-disciplina">+ Novo Registo</button>
+        </div>
+        <div class="u-fa3e1c note">Uma disciplina com mais de <strong>6 meses</strong> de aplicação, sem data de levantamento, é assinalada automaticamente como <strong>Em condições de levantamento</strong>.</div>
+        <div class="tbl-scroll"><table class="data-table" id="tbl-disciplina"><thead><tr><th>Nome</th><th>Igreja/Cong.</th><th>Motivo</th><th>Data Aplicação</th><th>Tempo</th><th>Data Levantamento</th><th>Estado</th><th>Obs.</th><th></th></tr></thead><tbody id="tbl-disciplina-body"></tbody></table></div>
+      </div>
+      <div id="sub-vis" class="hidden">
+        <div class="u-617963 toolbar card">
+          <input id="vis-filter-text" placeholder="Pesquisar nome, contacto, origem, motivo ou observação…">
+          <select id="vis-filter-origem"><option value="">Origem — todas</option></select>
+          <select id="vis-filter-centro"><option value="">Centro Origem — todos</option></select>
+          <select id="vis-filter-estado"><option value="">Estado — todos</option></select>
+          <input type="date" id="vis-filter-de"><input type="date" id="vis-filter-ate">
+          <button class="btn ghost sm" id="vis-filter-clear">Limpar</button><div class="spacer"></div><button class="btn ghost sm" id="btn-add-visitante">+ Novo Registo</button>
+        </div>
+        <div class="tbl-scroll"><table class="data-table" id="tbl-visitantes"><thead><tr><th>Nome</th><th>Contacto</th><th>Origem</th><th>Centro Origem</th><th>Receção</th><th>Dias</th><th>Visto/Regresso</th><th>Estado</th><th></th></tr></thead><tbody id="tbl-visitantes-body"></tbody></table></div>
+      </div>
+      <div id="sub-conv" class="hidden">
+        <div class="u-617963 toolbar card">
+          <input id="conv-filter-text" placeholder="Pesquisar nome, BI, telefone, igreja, município ou observação…">
+          <select id="conv-filter-igreja"><option value="">Igreja / Centro — todos</option></select>
+          <select id="conv-filter-estado"><option value="">Situação — todas</option></select>
+          <select id="conv-filter-genero"><option value="">Género — todos</option></select>
+          <button class="btn ghost sm" id="conv-filter-clear">Limpar</button>
+          <div class="spacer"></div>
+          <button class="btn gold sm" id="btn-add-convertido">+ Novo Registo</button>
+          <button class="btn ghost sm" id="btn-conv-move">Mover para Base Geral</button>
+          <button class="btn ghost sm" id="btn-conv-export">Exportar</button>
+          <button class="btn ghost sm" id="btn-conv-import">Importar</button>
+        </div>
+        <div class="u-fa3e1c note">A sub aba <strong>Convertidos</strong> é uma base independente. Os registos permanecem aqui até que o <strong>Administrador</strong> autorize a sua passagem para a Base Geral.</div>
+        <div class="u-49b068 tbl-scroll"><table class="data-table" id="tbl-convertidos"><thead><tr>
+          <th>SEL.</th><th>NOME COMPLETO</th><th>GÉNERO</th><th>DATA NASC</th><th>Estado Civil</th><th>Nome do Cônjuge</th><th>Nacionalidade</th><th>Nº do BI</th><th>Habilitações Literárias</th><th>Nome do Pai</th><th>Nome da Mãe</th><th>Telefone</th><th>E-mail</th><th>Província</th><th>Município</th><th>Morada</th><th>Igreja / Centro</th><th>Cargo</th><th>Função</th><th>Departamento</th><th>Situação</th><th>Data da Situação</th><th>Data do Batismo</th><th>Data da Conversão</th><th>Data de Registo</th><th>Nº do Cartão</th><th>Observações</th><th></th>
+        </tr></thead><tbody id="tbl-convertidos-body"></tbody></table></div>
+      </div>
+    </section>
+
+    <!-- ================= QUALIDADE DOS DADOS ================= -->
+    <section class="section" id="sec-qualidade">
+      <div class="topbar">
+        <div>
+          <h2>Qualidade dos Dados</h2>
+          <div class="sub">Análise automática efetuada sobre o ficheiro original</div>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi"><div class="num" id="q-total">0</div><div class="lbl">Membros carregados</div></div>
+        <div class="kpi"><div class="num" id="q-corrigidos">0</div><div class="lbl">Inconsistências corrigidas automaticamente</div></div>
+        <div class="kpi"><div class="num" id="q-incompletos">0</div><div class="lbl">Membros sem data de nascimento</div></div>
+        <div class="kpi"><div class="num" id="q-semsituacao">0</div><div class="lbl">Membros sem situação definida</div></div>
+      </div>
+
+      <div class="u-8e8697 card">
+        <h3 class="u-a730ea">O que foi analisado no ficheiro original</h3>
+        <p class="u-0998cf sub">
+          A folha <strong>DADOS_GERAIS_MEMBROS</strong> foi identificada como a base mais completa e foi usada como fonte
+          principal (595 membros). As folhas <em>BASE DADOS</em>, <em>BASE DADOS (2)</em>, <em>BASE DADOS (ALTERAÇÃO)</em> e
+          <em>BACKUP</em> são versões anteriores/parciais da mesma listagem e continham inconsistências adicionais de género;
+          não foram usadas como fonte de dados para evitar duplicação. Durante a leitura foram detetados e corrigidos automaticamente:
+        </p>
+        <ul class="u-0a226b">
+          <li>Capitalização inconsistente em Género, Estado Civil, Situação e Cargo (ex: "Ativo" / "ACTIVO" / "activo" tratados como o mesmo valor).</li>
+          <li>Faixa etária recalculada a partir da Data de Nascimento sempre que esta é válida (foram encontradas 288 faixas etárias divergentes da idade real).</li>
+          <li>Datas em formatos mistos (dd/mm/aaaa, dd.mm.aaaa, texto livre como "Não Batizado") normalizadas quando possível.</li>
+          <li>Duas datas de nascimento futuras/placeholder (idade resultante ≤ 2 anos) ignoradas por serem inválidas para um membro adulto.</li>
+          <li>Um par de registos com nome duplicado ("Mariana Armando Júlio") assinalado para verificação manual.</li>
+        </ul>
+        <div class="note">Estas correções foram aplicadas apenas na cópia de trabalho apresentada nesta ferramenta. O ficheiro Excel original enviado não foi alterado.</div>
+      </div>
+
+      <div class="u-8e8697 grid2">
+        <div class="card">
+          <h3 class="u-1db6be">Campos com mais valores em falta</h3>
+          <div class="chart-wrap tall"><canvas id="chart-missing"></canvas></div>
+        </div>
+        <div class="card">
+          <h3 class="u-180f1d">Casos assinalados (amostra)</h3>
+          <div class="u-e2b97b tbl-scroll">
+            <table class="data-table" id="tbl-issues">
+              <thead><tr><th>Membro</th><th>Campo</th><th>Observação</th></tr></thead>
+              <tbody id="tbl-issues-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= ESTATÍSTICA DO CULTO ================= -->
+    <section class="section" id="sec-cultos">
+      <div class="topbar">
+        <div>
+          <h2>Estatística do Culto</h2>
+          <div class="sub">Registo de frequência, ofertas e situação disciplinar por culto</div>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn gold sm" id="btn-add-culto">+ Registar Culto</button>
+        </div>
+      </div>
+
+      <div class="kpi-grid" id="culto-kpi"></div>
+
+      <div class="u-8e8697 grid2">
+        <div class="card">
+          <h3 class="u-1db6be">Frequência Total por Culto</h3>
+          <div class="chart-wrap tall"><canvas id="chart-culto-freq"></canvas></div>
+        </div>
+        <div class="card">
+          <h3 class="u-1db6be">Ofertas e Dízimos (Kz)</h3>
+          <div class="chart-wrap tall"><canvas id="chart-culto-ofertas"></canvas></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="u-1db6be">Registos de Cultos</h3>
+        <div class="tbl-scroll">
+          <table class="data-table" id="tbl-cultos">
+            <thead><tr><th>Data</th><th>Dia</th><th>Homens</th><th>Mulheres</th><th>Crianças</th><th>Obreiros</th><th>Visitas</th><th>Total Freq.</th><th>Ofertas</th><th>Dízimos</th><th>Disciplinar</th><th></th></tr></thead>
+            <tbody id="tbl-cultos-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= INVENTÁRIO ================= -->
+    <section class="section" id="sec-inventario">
+      <div class="topbar">
+        <div>
+          <h2>Inventário</h2>
+          <div class="sub">Bens e materiais do centro</div>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn ghost sm" id="btn-inv-print">Imprimir</button>
+          <button class="btn gold sm" id="btn-add-inv">+ Novo Item</button>
+        </div>
+      </div>
+
+      <div class="kpi-grid" id="inv-kpi"></div>
+
+      <div class="u-8e8697 grid2">
+        <div class="card">
+          <h3 class="u-1db6be">Itens por Categoria</h3>
+          <div class="chart-wrap"><canvas id="chart-inv-cat"></canvas></div>
+        </div>
+        <div class="card">
+          <h3 class="u-1db6be">Estado de Conservação</h3>
+          <div class="chart-wrap"><canvas id="chart-inv-estado"></canvas></div>
+        </div>
+      </div>
+
+      <div class="card" id="inv-print-area">
+        <div class="tbl-scroll">
+          <table class="data-table" id="tbl-inv">
+            <thead><tr><th>Item</th><th>Categoria</th><th>Quantidade</th><th>Estado</th><th>Localização</th><th>Observações</th><th></th></tr></thead>
+            <tbody id="tbl-inv-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= ATIVIDADES ================= -->
+    <section class="section" id="sec-atividades">
+      <div class="topbar">
+        <div>
+          <h2>Estatística de Atividades</h2>
+          <div class="sub">Atividades programadas e realizadas por departamento</div>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn gold sm" id="btn-add-ativ">+ Nova Atividade</button>
+        </div>
+      </div>
+
+      <div class="kpi-grid" id="ativ-kpi"></div>
+
+      <div class="u-8e8697 grid2">
+        <div class="card">
+          <h3 class="u-1db6be">Atividades por Estado</h3>
+          <div class="chart-wrap"><canvas id="chart-ativ-estado"></canvas></div>
+        </div>
+        <div class="card">
+          <h3 class="u-1db6be">Atividades por Departamento</h3>
+          <div class="chart-wrap"><canvas id="chart-ativ-depto"></canvas></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="tbl-scroll">
+          <table class="data-table" id="tbl-ativ">
+            <thead><tr><th>Atividade</th><th>Departamento</th><th>Data Programada</th><th>Data Realização</th><th>Estado</th><th>Obs.</th><th></th></tr></thead>
+            <tbody id="tbl-ativ-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= ORGANIGRAMA (V14) ================= -->
+    <section class="section" id="sec-organigrama" aria-labelledby="h-organigrama">
+      <div class="topbar">
+        <div>
+          <h2 id="h-organigrama">Organigrama</h2>
+          <div class="sub">Estrutura de liderança, Direcções e Departamentos</div>
+        </div>
+        <div class="topbar-actions" id="v14o-actions"></div>
+      </div>
+      <div id="v14-org"></div>
+    </section>
+
+    <!-- ================= SECRETARIA (V20) ================= -->
+    <section class="section" id="sec-secretaria" aria-labelledby="h-secretaria">
+      <div class="topbar">
+        <div>
+          <h2 id="h-secretaria">Secretaria</h2>
+          <div class="sub">Informações e comunicados oficiais: pena disciplinar, exonerações, nomeações, casamentos, transferências…</div>
+        </div>
+        <div class="topbar-actions" id="v20-actions"></div>
+      </div>
+      <div id="v20-sec"></div>
+    </section>
+
+    <!-- ================= TUTORIAL / AJUDA ================= -->
+    <section class="section" id="sec-ajuda">
+      <div class="topbar">
+        <div>
+          <h2>Tutorial / Ajuda</h2>
+          <div class="sub">Como usar o Sistema de Gestão de Membros do Centro Monte Moriá</div>
+        </div>
+      </div>
+      <div id="ajuda-content"></div>
+    </section>
+
+    <!-- ================= LIXEIRA ================= -->
+    <section class="section" id="sec-lixeira">
+      <div class="topbar">
+        <div>
+          <h2>Lixeira / Recuperação de Dados</h2>
+          <div class="sub">Registos eliminados — restauráveis com palavra-passe de administração</div>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn ghost sm" id="btn-lixeira-purge-all">Esvaziar Lixeira</button>
+        </div>
+      </div>
+      <div class="tbl-scroll">
+        <table class="data-table" id="tbl-lixeira">
+          <thead><tr><th>Tipo</th><th>Registo</th><th>Eliminado em</th><th>Por</th><th>Ações</th></tr></thead>
+          <tbody id="tbl-lixeira-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ================= UTILIZADORES ================= -->
+    <section class="section" id="sec-utilizadores">
+      <div class="topbar">
+        <div>
+          <h2>Gestão de Utilizadores</h2>
+          <div class="sub">Perfis de acesso, permissões, palavras-passe e atividade</div>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn ghost sm" id="btn-change-master-pw">Alterar Palavra-passe Mestra</button>
+          <button class="btn gold sm" id="btn-add-user">+ Novo Utilizador</button>
+        </div>
+      </div>
+      <div class="u-8e8697 note">
+        A palavra-passe mestra (atualmente definida pela administração) desbloqueia todas as ações protegidas em modo Convidado.
+        Utilizadores nomeados abaixo têm um início de sessão próprio e só veem/editam o que lhes for permitido — a eliminação de dados continua sempre a exigir a palavra-passe mestra, mesmo com sessão iniciada.
+      </div>
+      <div class="tabs-inline">
+        <button data-usersub="lista" class="active">Utilizadores</button>
+        <button data-usersub="atividade">Atividade Recente</button>
+      </div>
+      <div id="usersub-lista">
+        <div class="tbl-scroll">
+          <table class="data-table" id="tbl-users">
+            <thead><tr><th>Utilizador</th><th>Perfil</th><th>Separadores Permitidos</th><th>Pode Editar</th><th>Ações</th></tr></thead>
+            <tbody id="tbl-users-body"></tbody>
+          </table>
+        </div>
+      </div>
+      <div id="usersub-atividade" class="hidden">
+        <div class="toolbar">
+          <select id="audit-filter-user"><option value="">Todos os utilizadores</option></select>
+          <div class="spacer"></div>
+          <button class="btn ghost sm" id="btn-audit-clear">Limpar Registo de Atividade</button>
+        </div>
+        <div class="tbl-scroll">
+          <table class="data-table" id="tbl-audit">
+            <thead><tr><th>Data / Hora</th><th>Utilizador</th><th>Ação</th><th>Item</th><th>Detalhe</th></tr></thead>
+            <tbody id="tbl-audit-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= LISTAS & CATEGORIAS ================= -->
+    <section class="section" id="sec-listas">
+      <div class="topbar">
+        <div>
+          <h2>Listas &amp; Categorias</h2>
+          <div class="sub">Base administrável dos valores usados em menus, filtros e relatórios</div>
+        </div>
+      </div>
+      <div class="u-8e8697 note">Alterar ou remover um valor aqui atualiza imediatamente todos os membros que o utilizam e a lista fica assim para todos os novos registos. Todas as alterações exigem a palavra-passe de administração.</div>
+      <div class="tabs-inline"></div>
+      <div id="listas-body"></div>
+    </section>
+
+    <!-- ================= APARÊNCIA ================= -->
+    <section class="section" id="sec-aparencia">
+      <div class="topbar">
+        <div>
+          <h2>Aparência &amp; Configuração</h2>
+          <div class="sub">Logótipo, nome da instituição, cores e ordem do menu — apenas Admin</div>
+        </div>
+      </div>
+
+      <div class="u-8b5267 grid2">
+        <div class="card">
+          <h3 class="u-180f1d">Logótipo</h3>
+          <div class="u-fcc3bc">
+            <img id="ap-logo-preview" src="" alt="Logótipo atual" class="u-5259e7">
+            <input type="file" id="ap-logo-input" accept="image/*">
+          </div>
+          <div class="u-9c6869">
+            <button class="btn gold sm" id="btn-ap-logo-save">Guardar Logótipo</button>
+            <button class="btn ghost sm" id="btn-ap-logo-reset">Repor Logótipo Padrão (ADP)</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3 class="u-180f1d">Nome da Instituição (menu lateral)</h3>
+          <div class="field"><label>Nome</label><input type="text" id="ap-nome"></div>
+          <div class="field"><label>Subtítulo</label><input type="text" id="ap-subtitulo"></div>
+          <button class="btn gold sm" id="btn-ap-nome-save">Guardar Nome</button>
+        </div>
+      </div>
+
+      <div class="u-8e8697 card">
+        <h3 class="u-180f1d">Dados da Ficha Individual (cabeçalho de impressão)</h3>
+        <div class="fields-grid c3">
+          <div class="field"><label>Denominação</label><input type="text" id="ap-denom"></div>
+          <div class="field"><label>Ministério</label><input type="text" id="ap-ministerio"></div>
+          <div class="field"><label>Centro / Congregação</label><input type="text" id="ap-centro"></div>
+          <div class="field"><label>Endereço</label><input type="text" id="ap-endereco"></div>
+          <div class="field"><label>Telefone</label><input type="text" id="ap-tel"></div>
+          <div class="field"><label>Pastor Responsável</label><input type="text" id="ap-pastor"></div>
+        </div>
+        <button class="btn gold sm" id="btn-ap-ficha-save">Guardar Dados da Ficha</button>
+      </div>
+
+      <div class="u-8e8697 card">
+        <h3 class="u-180f1d">Tema de Cores</h3>
+        <div id="ap-theme-swatches" class="u-4ad06f"></div>
+      </div>
+
+      <div class="card">
+        <h3 class="u-ac0f8b">Gestão das Abas do Menu</h3>
+        <p class="u-c9d437 sub">Pode renomear, mostrar/ocultar, reordenar e criar novas abas. Cada alteração exige a palavra-passe de Admin.</p>
+        <div id="ap-tab-order-list" class="u-6d33f9"></div>
+        <button class="btn ghost sm" id="btn-ap-order-reset">Repor Ordem e Nomes Padrão</button>
+        <div class="u-90a2e1">
+          <h4 class="u-b7d16b">Adicionar nova aba personalizada</h4>
+          <div class="fields-grid c3">
+            <div class="field"><label>Nome da Aba</label><input id="ap-new-tab-name" placeholder="Ex.: Ministério Infantil"></div>
+            <div class="u-a74d27 field"><label>Conteúdo da Aba</label><textarea id="ap-new-tab-content" rows="3" placeholder="Descreva o conteúdo que pretende guardar nesta aba…"></textarea></div>
+          </div>
+          <button class="btn gold sm" id="btn-ap-add-tab">+ Adicionar Aba</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ============ MODAL: MEMBRO ============ -->
+<div class="modal-bg" id="modal-member">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modal-member-title">Novo Membro</h3>
+      <button class="modal-close" data-close>&times;</button>
+    </div>
+    <div class="modal-body" id="modal-member-body"></div>
+    <div class="modal-foot">
+      <button class="btn ghost sm" data-close>Cancelar</button>
+      <button class="btn gold sm" id="btn-save-member">Guardar Membro</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: DISCIPLINA ============ -->
+<div class="modal-bg" id="modal-disciplina">
+  <div class="modal">
+    <div class="modal-head"><h3>Registo de Disciplina</h3><button class="modal-close" data-close>&times;</button></div>
+    <div class="modal-body" id="modal-disciplina-body"></div>
+    <div class="modal-foot">
+      <button class="btn ghost sm" data-close>Cancelar</button>
+      <button class="btn gold sm" id="btn-save-disciplina">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: VISITANTE ============ -->
+<div class="modal-bg" id="modal-visitante">
+  <div class="modal">
+    <div class="modal-head"><h3>Registo de Visitante</h3><button class="modal-close" data-close>&times;</button></div>
+    <div class="modal-body" id="modal-visitante-body"></div>
+    <div class="modal-foot">
+      <button class="btn ghost sm" data-close>Cancelar</button>
+      <button class="btn gold sm" id="btn-save-visitante">Guardar</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- ============ MODAL: CONVERTIDO ============ -->
+<div class="modal-bg" id="modal-convertido">
+  <div class="modal">
+    <div class="modal-head"><h3>Registo de Convertido</h3><button class="modal-close" data-close>&times;</button></div>
+    <div class="modal-body" id="modal-convertido-body"></div>
+    <div class="modal-foot"><button class="btn ghost sm" data-close>Cancelar</button><button class="btn gold sm" id="btn-save-convertido">Guardar</button></div>
+  </div>
+</div>
+
+<!-- ============ MODAL: LOGIN ============ -->
+<div class="modal-bg" id="modal-login">
+  <div class="u-88efe2 modal">
+    <div class="modal-head"><h3>Iniciar Sessão</h3><button class="modal-close" data-close>&times;</button></div>
+    <div class="modal-body">
+      <div class="field"><label>Utilizador</label><select id="login-username"><option value="admin">Administrador</option></select></div>
+      <div class="field"><label>Palavra-passe</label><input type="password" id="login-password" autocomplete="current-password"></div>
+      <div id="login-error" class="u-80795c note">Utilizador ou palavra-passe incorretos.</div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost sm" data-close>Cancelar</button>
+      <button class="btn gold sm" id="btn-login-confirm">Entrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: UTILIZADOR (novo/editar) ============ -->
+<div class="modal-bg" id="modal-user-edit">
+  <div class="modal">
+    <div class="modal-head"><h3 id="modal-user-title">Novo Utilizador</h3><button class="modal-close" data-close>&times;</button></div>
+    <div class="modal-body" id="modal-user-body"></div>
+    <div class="modal-foot">
+      <button class="btn ghost sm" data-close>Cancelar</button>
+      <button class="btn gold sm" id="btn-save-user">Guardar Utilizador</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: ALTERAR PASSWORD MESTRA ============ -->
+<div class="modal-bg" id="modal-master-pw">
+  <div class="u-ae18a0 modal">
+    <div class="modal-head"><h3>Alterar Palavra-passe Mestra</h3><button class="modal-close" data-close>&times;</button></div>
+    <div class="modal-body">
+      <div class="field"><label>Nova Palavra-passe</label><input type="password" id="new-master-pw"></div>
+      <div class="field"><label>Confirmar Nova Palavra-passe</label><input type="password" id="new-master-pw2"></div>
+      <div id="master-pw-error" class="u-80795c note">As palavras-passe não coincidem ou estão vazias.</div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost sm" data-close>Cancelar</button>
+      <button class="btn gold sm" id="btn-master-pw-save">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: PERSONALIZAR PAINEL ============ -->
+<div class="modal-bg" id="modal-dash-custom">
+  <div class="u-ddd0bc modal">
+    <div class="modal-head"><h3>Personalizar Painel</h3><button class="modal-close" data-close>&times;</button></div>
+    <div class="modal-body" id="modal-dash-custom-body"></div>
+    <div class="modal-foot">
+      <button class="btn ghost sm" data-close>Fechar</button>
+      <button class="btn gold sm" id="btn-dash-custom-save">Guardar e Aplicar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: PASSWORD ============ -->
+<div class="modal-bg" id="modal-password">
+  <div class="u-88efe2 modal">
+    <div class="modal-head"><h3>Ação Protegida</h3><button class="modal-close" data-close>&times;</button></div>
+    <div class="modal-body">
+      <p class="u-c9d437 sub" id="pw-reason">Esta ação requer a palavra-passe de administração.</p>
+      <div class="field"><label>Palavra-passe</label><input type="password" id="pw-input" placeholder="••••••••"></div>
+      <div id="pw-error" class="u-80795c note">Palavra-passe incorreta. Tente novamente.</div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost sm" data-close>Cancelar</button>
+      <button class="btn gold sm" id="btn-pw-confirm">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: ADICIONAR EM MASSA ============ -->
+<div class="modal-bg" id="modal-mass">
+  <div class="u-10efee modal">
+    <div class="modal-head"><h3>Adicionar Membros em Massa</h3><button class="modal-close" data-close>&times;</button></div>
+    <div class="modal-body">
+      <p class="u-0998cf sub">Cole uma lista com um membro por linha. Campos separados por ponto e vírgula ( ; ), pela seguinte ordem:</p>
+      <div class="u-fa3e1c note">Nome ; Género ; Data Nascimento (aaaa-mm-dd) ; Telefone ; Departamento ; Cargo ; Situação<br>Apenas o <strong>Nome</strong> é obrigatório — pode deixar os restantes campos em branco.</div>
+      <textarea id="mass-textarea" rows="8" class="u-6d5673" placeholder="Ex: João Manuel da Silva;Masculino;1990-04-12;923000000;JUVENTUDE;MEMBRO;Ativo"></textarea>
+      <div class="u-5371db"><button class="btn ghost sm" id="btn-mass-preview">Pré-visualizar</button></div>
+      <div id="mass-preview" class="u-553a64"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost sm" data-close>Cancelar</button>
+      <button class="btn gold sm" id="btn-mass-confirm" disabled>Adicionar Membros Válidos</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: BASE DE DADOS EXTRA (MERGE) ============ -->
+<div class="modal-bg" id="modal-merge">
+  <div class="u-ddd0bc modal">
+    <div class="modal-head"><h3>Carregar Base de Dados Extra</h3><button class="modal-close" data-close>&times;</button></div>
+    <div class="modal-body">
+      <p class="u-0998cf sub">Carregue um ficheiro <strong>.xlsx</strong>, <strong>.csv</strong> ou backup <strong>.json</strong> desta ferramenta. Os membros serão <strong>adicionados</strong> à base de dados atual — nada será eliminado. Membros já cadastrados (mesmo nome) serão assinalados e ignorados automaticamente.</p>
+      <input type="file" id="merge-file-input" accept=".xlsx,.csv,.json">
+      <div id="merge-preview" class="u-553a64"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost sm" data-close>Cancelar</button>
+      <button class="btn gold sm" id="btn-merge-confirm" disabled>Adicionar Novos Membros</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: CULTO ============ -->
+<div class="modal-bg" id="modal-culto">
+  <div class="modal">
+    <div class="modal-head"><h3 id="modal-culto-title">Registar Culto</h3><button class="modal-close" data-close>&times;</button></div>
+    <div class="modal-body" id="modal-culto-body"></div>
+    <div class="modal-foot">
+      <button class="btn ghost sm" data-close>Cancelar</button>
+      <button class="btn gold sm" id="btn-save-culto">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: INVENTÁRIO ============ -->
+<div class="modal-bg" id="modal-inv">
+  <div class="modal">
+    <div class="modal-head"><h3 id="modal-inv-title">Novo Item</h3><button class="modal-close" data-close>&times;</button></div>
+    <div class="modal-body" id="modal-inv-body"></div>
+    <div class="modal-foot">
+      <button class="btn ghost sm" data-close>Cancelar</button>
+      <button class="btn gold sm" id="btn-save-inv">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: ATIVIDADE ============ -->
+<div class="modal-bg" id="modal-ativ">
+  <div class="modal">
+    <div class="modal-head"><h3 id="modal-ativ-title">Nova Atividade</h3><button class="modal-close" data-close>&times;</button></div>
+    <div class="modal-body" id="modal-ativ-body"></div>
+    <div class="modal-foot">
+      <button class="btn ghost sm" data-close>Cancelar</button>
+      <button class="btn gold sm" id="btn-save-ativ">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="vendor/chart.umd.min.js"></script>
+<script src="vendor/xlsx.full.min.js"></script>
+<script src="vendor/chartjs-plugin-datalabels.min.js"></script>
+<script src="data/seed.js"></script>
+<script src="js/00-v14-graficos.js"></script>
+<script src="js/00b-v14-persistencia.js"></script>
+<script src="js/01-app-core.js"></script>
+<script src="js/02-security-v8.js"></script>
+<script src="js/03-v10-universal.js"></script>
+<script src="js/04-v12-conversion.js"></script>
+<script src="js/05-v11-persistence.js"></script>
+<script src="js/06-v14-graficos-aparencia.js"></script>
+<script src="js/07-v14-atividades.js"></script>
+<script src="js/08-v14-organigrama.js"></script>
+<script src="js/09-v14-varredura.js"></script>
+<script src="js/10-v15-integridade.js"></script>
+<script src="js/11-v15-paineis.js"></script>
+<script src="js/12-v16.js"></script>
+<script src="js/13-v17-relatorio.js"></script>
+<script src="js/14-v18-menu.js"></script>
+<script src="js/15-v19-compilar.js"></script>
+<script src="js/16-v20-secretaria.js"></script>
+<script src="js/17-v21.js"></script>
+<script src="js/18-v22.js"></script>
+<script src="js/19-v23.js"></script>
+</body>
+</html>

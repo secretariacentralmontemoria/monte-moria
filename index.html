@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Centro Monte Moriá — Sistema de Gestão de Membros e aplicação das congregações.">
+  <meta name="theme-color" content="#13233D">
+  <title>Centro Monte Moriá — Sistemas</title>
+  <link rel="icon" href="logo.png">
+  <link rel="stylesheet" href="inicio.css">
+</head>
+<body>
+  <a class="skip" href="#conteudo">Saltar para o conteúdo</a>
+  <header class="topo">
+    <img src="logo.png" alt="Logótipo da Assembleia de Deus Pentecostal" width="74" height="50">
+    <div>
+      <p class="sub">Assembleia de Deus Pentecostal · Ministério Betel Luanda</p>
+      <h1>Centro Monte Moriá</h1>
+    </div>
+  </header>
+  <main id="conteudo" tabindex="-1">
+    <p class="intro">Escolha o sistema. Os dados ficam guardados apenas no aparelho onde são registados — nada é enviado para este site.</p>
+    <div class="cartoes">
+      <a class="cartao" href="sistema/index.html">
+        <span class="tag">Computador da sede</span>
+        <h2>Sistema de Gestão de Membros</h2>
+        <p>Membros, finanças, relatório mensal, compilação das congregações, Secretaria e gráficos.</p>
+        <span class="ir" aria-hidden="true">Abrir →</span>
+      </a>
+      <a class="cartao" href="congregacao/index.html">
+        <span class="tag">Telemóvel · funciona sem internet</span>
+        <h2>Finanças e Secretaria da Congregação</h2>
+        <p>Lançamentos, relatório do mês, Informação da Secretaria e envio do pacote à sede.</p>
+        <span class="ir" aria-hidden="true">Abrir →</span>
+      </a>
+    </div>
+    <section class="instalar" aria-labelledby="h-inst">
+      <h2 id="h-inst">Instalar no telemóvel (Android e iPhone)</h2>
+      <div class="inst">
+        <figure class="qr-caixa" id="qr-caixa" hidden>
+          <div class="qr" id="qr-cong" data-alvo="congregacao/"></div>
+          <figcaption>Aponte a câmara do telemóvel: abre a aplicação da congregação, que mostra como a instalar.</figcaption>
+        </figure>
+        <ol class="inst-passos">
+          <li><b>Android</b> — abre no Chrome: toque em <b>«Instalar aplicação»</b> (um toque).</li>
+          <li><b>iPhone</b> — abre no Safari: <b>Partilhar › «Adicionar ao ecrã principal»</b> (no iOS 26, primeiro os três pontos ⋯). A aplicação mostra os passos.</li>
+          <li>Depois, abra sempre pelo <b>novo ícone</b>: ecrã inteiro e funciona sem internet.</li>
+          <li>Não envie o ficheiro .html pelo WhatsApp para iPhones: envie o <b>link</b> ou mostre este código.</li>
+        </ol>
+      </div>
+    </section>
+    <section class="nota" aria-labelledby="h-nota">
+      <h2 id="h-nota">Antes de usar</h2>
+      <ul>
+        <li><b>iPhone:</b> abra a aplicação da congregação <b>por este endereço, no Safari</b> — o ficheiro .html recebido no WhatsApp abre só em pré-visualização e não funciona. Depois toque em <b>Partilhar › Adicionar ao ecrã principal</b> e use sempre o ícone (funciona sem internet).</li>
+        <li><b>Android:</b> Chrome › menu ⋮ › <b>Instalar aplicação</b> (ou «Adicionar ao ecrã principal»).</li>
+        <li>Mude as palavras-passe iniciais logo na primeira entrada.</li>
+        <li>Faça cópias de segurança regulares: os dados vivem só no aparelho de cada utilizador.</li>
+      </ul>
+    </section>
+  </main>
+  <footer class="rodape"><p>Centro Monte Moriá · Ministério Betel Luanda</p></footer>
+  <script src="vendor/qrcode.min.js"></script>
+  <script src="inicio.js"></script>
+</body>
+</html>

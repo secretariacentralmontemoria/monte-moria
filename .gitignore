@@ -1,0 +1,15 @@
+# Nunca publicar dados: cópias de segurança, exportações e as versões locais com dados
+backup_*.json
+Copia_*.json
+MonteMoria_*.json
+Secretaria_*.json
+Compilacao_*.xlsx
+Relatorio_*.xlsx
+*.csv
+Centro_Monte_Moria_Sistema_Gestao_Membros_*.html
+*.pptx
+# Frota Ebenézer: pacotes, exportações e imagens geradas na aplicação
+Frota_Ebenezer_*.json
+Frota_Ebenezer_*.xlsx
+Frota_Ebenezer_*.png
+Frota_Ebenezer_offline.html

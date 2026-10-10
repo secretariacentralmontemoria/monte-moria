@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#13233D">
+  <!-- iPhone: instalar no ecrã principal («Adicionar ao ecrã principal» no Safari) -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Finanças Cong.">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="format-detection" content="telephone=no">
+  <!-- Endereço público da aplicação (preenchido por ferramentas/construir.py --url): usado pelo ficheiro único para indicar onde instalar -->
+  <meta name="endereco-instalacao" content="https://secretariacentralmontemoria.github.io/monte-moria/congregacao/">
+  <meta name="description" content="Registo financeiro offline das congregações do Centro Monte Moriá, com envio para a tesouraria central.">
+  <title>Finanças da Congregação — Centro Monte Moriá</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="logo.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css">
+  <!-- Primeiro script: compatibilidade com iPhones antigos e diagnóstico de arranque (ES5) -->
+  <script src="compat.js"></script>
+</head>
+<body>
+  <!-- Aviso visível só quando o JavaScript NÃO corre (ex.: pré-visualização do iPhone ao tocar no ficheiro no WhatsApp ou em Ficheiros) -->
+  <section class="sem-js" aria-labelledby="sem-js-t">
+    <img src="logo.png" alt="" width="96" height="65">
+    <h1 id="sem-js-t">A aplicação não está a correr</h1>
+    <p>Está a ver uma <b>pré-visualização</b> deste ficheiro. A pré-visualização mostra a página mas não executa a aplicação, por isso a entrada e os botões não respondem.</p>
+    <h2>No iPhone</h2>
+    <ol>
+      <li>Abra o <b>endereço (link) da aplicação</b> no <b>Safari</b> — peça-o à tesouraria central.</li>
+      <li>Toque em <b>Partilhar</b> (quadrado com seta) e escolha <b>«Adicionar ao ecrã principal»</b>.</li>
+      <li>Abra sempre pelo novo ícone. Depois da primeira abertura funciona <b>sem internet</b>.</li>
+    </ol>
+    <h2>No Android ou no computador</h2>
+    <p>Guarde o ficheiro e abra-o com o <b>Chrome</b>, o <b>Edge</b> ou o <b>Firefox</b>.</p>
+    <p class="sem-js-link"><b>Endereço da aplicação:</b> <a href="https://secretariacentralmontemoria.github.io/monte-moria/congregacao/">https://secretariacentralmontemoria.github.io/monte-moria/congregacao/</a></p>
+  </section>
+  <a class="skip" href="#main">Saltar para o conteúdo</a>
+  <header class="app-head">
+    <img class="logo" src="logo.png" alt="Logótipo da Assembleia de Deus Pentecostal" width="56" height="38">
+    <div class="head-txt">
+      <p class="org">Centro Monte Moriá · Finanças</p>
+      <h1 id="cong-name">Congregação</h1>
+    </div>
+    <label class="sr-only" for="mes">Mês</label>
+    <select id="mes" class="mes-sel"></select>
+    <button type="button" class="icon-btn" id="instalar-btn" aria-label="Instalar a aplicação" title="Instalar a aplicação" hidden>⤓</button>
+    <button type="button" class="icon-btn" id="theme" aria-label="Alternar modo claro/escuro" title="Modo claro/escuro">◐</button>
+    <button type="button" class="icon-btn" id="logout" aria-label="Terminar sessão" title="Terminar sessão">⏻</button>
+  </header>
+
+  <nav class="tabs" aria-label="Secções">
+    <button type="button" class="tab" data-tab="lanc" aria-current="page">Lançamentos</button>
+    <button type="button" class="tab" data-tab="rel">Relatório</button>
+    <button type="button" class="tab" data-tab="sec">Secretaria</button>
+    <button type="button" class="tab" data-tab="enviar">Enviar</button>
+    <button type="button" class="tab" data-tab="def">Definições</button>
+  </nav>
+
+  <main id="main" tabindex="-1">
+    <section id="tab-lanc" class="panel" aria-labelledby="h-lanc">
+      <h2 id="h-lanc">Lançamentos do mês</h2>
+      <div class="kpis" id="kpis" aria-live="polite"></div>
+      <form id="f-lanc" class="card form" novalidate>
+        <h3 id="f-title">Novo lançamento</h3>
+        <div class="grid">
+          <div class="field"><label for="l-data">Data *</label><input id="l-data" name="data" type="date" required></div>
+          <div class="field"><label for="l-tipo">Tipo *</label><select id="l-tipo" name="tipo"><option>Entrada</option><option>Despesa</option></select></div>
+          <div class="field"><label for="l-cat">Categoria *</label><input id="l-cat" name="categoria" list="dl-cat" maxlength="80" required autocomplete="off"><datalist id="dl-cat"></datalist></div>
+          <div class="field"><label for="l-sub">Subcategoria</label><input id="l-sub" name="subcategoria" maxlength="80" autocomplete="off"></div>
+          <div class="field full"><label for="l-desc">Descrição *</label><input id="l-desc" name="descricao" maxlength="160" required></div>
+          <div class="field"><label for="l-val">Valor (Kz) *</label><input id="l-val" name="valor" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="ex.: 150.000 ou 1500,50" required></div>
+          <div class="field"><label for="l-obs">Observação</label><input id="l-obs" name="obs" maxlength="200"></div>
+        </div>
+        <p class="err" role="alert" id="l-err"></p>
+        <div class="actions">
+          <button type="submit" class="btn primary" id="l-save">Guardar lançamento</button>
+          <button type="button" class="btn" id="l-cancel" hidden>Cancelar edição</button>
+        </div>
+      </form>
+      <div class="card">
+        <div class="row-head"><h3>Registados</h3><label class="sr-only" for="q">Pesquisar</label><input id="q" type="search" placeholder="Pesquisar…"></div>
+        <ul class="lista" id="lista" aria-live="polite"></ul>
+      </div>
+    </section>
+
+    <section id="tab-rel" class="panel" aria-labelledby="h-rel" hidden>
+      <h2 id="h-rel">Relatório do mês</h2>
+      <div class="card form">
+        <div class="grid">
+          <div class="field"><label for="m-saldo">Saldo anterior (Kz)</label><input id="m-saldo" type="text" inputmode="decimal" autocomplete="off" spellcheck="false"></div>
+          <div class="field full"><label for="m-notas">Observações do mês</label><textarea id="m-notas" maxlength="600" rows="2"></textarea></div>
+        </div>
+        <p class="err" role="alert" id="m-err"></p>
+        <div class="actions"><button type="button" class="btn" id="m-save">Guardar saldo e observações</button><button type="button" class="btn" id="m-auto">Usar saldo do mês anterior</button></div>
+      </div>
+      <article class="card sheet" id="sheet" aria-label="Relatório do mês"></article>
+      <div class="actions"><button type="button" class="btn primary" id="print">Imprimir…</button><button type="button" class="btn" id="rel-adv">Avançado (admin)</button></div>
+    </section>
+
+    <section id="tab-sec" class="panel" aria-labelledby="h-sec" hidden>
+      <h2 id="h-sec">Secretaria</h2>
+      <div class="actions sec-bar"><label class="sr-only" for="sec-doc">Documento</label><select id="sec-doc"></select>
+        <button type="button" class="btn primary" id="sec-novo">+ Nova informação</button><button type="button" class="btn" id="sec-dup">Duplicar</button>
+        <button type="button" class="btn" id="sec-toggle" aria-pressed="false">Ocultar campos</button><button type="button" class="btn" id="sec-print">Imprimir…</button><button type="button" class="btn" id="sec-word">Word (.doc)</button><button type="button" class="btn" id="sec-enviar">Enviar à sede (.json)</button></div>
+      <form id="sec-cab" class="card form" novalidate><h3>Cabeçalho do documento</h3><div class="grid">
+        <div class="field full"><label for="sc-assunto">Assunto *</label><input id="sc-assunto" data-k="assunto" maxlength="120"></div>
+        <div class="field full"><label for="sc-dest">Destinatário</label><input id="sc-dest" data-k="destinatario" maxlength="120"></div>
+        <div class="field full"><label for="sc-saud">Saudação</label><input id="sc-saud" data-k="saudacao" maxlength="160"></div>
+        <div class="field full"><label for="sc-fecho">Fecho (local e data)</label><input id="sc-fecho" data-k="fecho" maxlength="200"></div></div>
+        <label class="check"><input type="checkbox" id="sc-vazias" data-k="mostrarVazias"> Mostrar categorias sem itens</label></form>
+      <div id="sec-cats"></div>
+      <article class="card sheet sec-folha" id="sec-folha" aria-label="Pré-visualização da Informação"></article>
+    </section>
+
+    <section id="tab-enviar" class="panel" aria-labelledby="h-enviar" hidden>
+      <h2 id="h-enviar">Enviar para a tesouraria central</h2>
+      <ol class="passos">
+        <li><b>Confira</b> os lançamentos e o relatório do mês.</li>
+        <li><b>Escolha o formato</b> e carregue no botão: no telemóvel abre-se «Partilhar» (WhatsApp, e-mail, Drive…).</li>
+        <li>A tesouraria importa o ficheiro no sistema principal em <b>Finanças › Congregações › Importar ficheiro da congregação</b>.</li>
+      </ol>
+      <div class="cards-envio">
+        <button type="button" class="envio rec" data-exp="json"><b>Pacote para o sistema (.json)</b><span>Recomendado. Importa-se sem erros e tem controlo de integridade.</span></button>
+        <button type="button" class="envio" data-exp="xlsx"><b>Excel (.xlsx)</b><span>Para abrir no Excel; também se importa no sistema.</span></button>
+        <button type="button" class="envio" data-exp="csv"><b>CSV (;)</b><span>Formato simples; também se importa no sistema.</span></button>
+        <button type="button" class="envio" data-exp="txt"><b>Resumo em texto</b><span>Para WhatsApp/SMS. Só informativo (não se importa).</span></button>
+      </div>
+      <label class="check"><input type="checkbox" id="exp-todos"> Enviar todos os meses (em vez de só o mês escolhido)</label>
+      <div class="card"><h3>Envios feitos</h3><ul class="lista mini" id="envios"></ul></div>
+    </section>
+
+    <section id="tab-def" class="panel" aria-labelledby="h-def" hidden>
+      <h2 id="h-def">Definições e cópia de segurança</h2>
+      <form id="f-nomes" class="card form" novalidate aria-labelledby="h-nomes">
+        <h3 id="h-nomes">Nomes da congregação e das assinaturas</h3>
+        <p class="hint">Cada utilizador actualiza os nomes que lhe dizem respeito: o tesoureiro (Finanças), o secretário (Secretaria); todos podem mudar a congregação e o líder.</p>
+        <div class="grid">
+          <div class="field"><label for="n-cong">Congregação *</label><input id="n-cong" name="congregacao" list="dl-cong" maxlength="80" required></div>
+          <div class="field"><label for="n-lider">Líder *</label><input id="n-lider" name="lider" maxlength="80" required></div>
+          <div class="field"><label for="n-tes">Tesoureiro(a)</label><input id="n-tes" name="tesoureiro" maxlength="80"></div>
+          <div class="field"><label for="n-sec">Secretário(a)</label><input id="n-sec" name="secretario" maxlength="80"></div>
+        </div>
+        <p class="err" role="alert" id="n-err"></p>
+        <div class="actions"><button type="submit" class="btn primary">Guardar nomes</button></div>
+      </form>
+      <form id="f-perfil" class="card form" novalidate>
+        <h3>Identificação da congregação</h3>
+        <div class="grid">
+          <div class="field"><label for="p-cong">Congregação *</label><input id="p-cong" name="congregacao" list="dl-cong" maxlength="80" required><datalist id="dl-cong"></datalist></div>
+          <div class="field"><label for="p-resp">Responsável (tesoureiro) *</label><input id="p-resp" name="responsavel" maxlength="80" required></div>
+          <div class="field"><label for="p-tel">Telefone</label><input id="p-tel" name="telefone" type="tel" maxlength="30" inputmode="tel"></div>
+          <div class="field"><label for="p-lider">Líder da congregação *</label><input id="p-lider" name="lider" maxlength="80" required></div>
+        </div>
+        <p class="err" role="alert" id="p-err"></p>
+        <div class="actions"><button type="submit" class="btn primary">Guardar identificação</button></div>
+      </form>
+      <div class="card" id="inst-card">
+        <h3>Aplicação no telemóvel</h3>
+        <p class="hint" id="inst-estado">Instale a aplicação para a ter no ecrã principal e sem internet.</p>
+        <div class="actions"><button type="button" class="btn primary" id="inst-abrir">Instalar a aplicação</button></div>
+      </div>
+      <div class="card">
+        <h3>Cópia de segurança</h3>
+        <p class="hint">Os dados ficam só neste telemóvel. Faça uma cópia pelo menos uma vez por semana e guarde-a fora do telemóvel (Drive, e-mail ou computador).</p>
+        <div class="actions">
+          <button type="button" class="btn primary" id="backup">Fazer cópia de segurança</button>
+          <button type="button" class="btn" id="restore">Restaurar cópia</button>
+          <input type="file" id="restore-file" class="ficheiro-oculto" accept=".json,application/json,text/plain,.txt" tabindex="-1" aria-hidden="true">
+        </div>
+        <p class="hint" id="ult-backup"></p>
+      </div>
+      <div class="card">
+        <h3>Novo mês</h3>
+        <div class="grid"><div class="field"><label for="novo-mes">Mês</label><input id="novo-mes" type="month"></div></div>
+        <div class="actions"><button type="button" class="btn" id="criar-mes">Criar mês (o saldo transita)</button></div>
+      </div>
+      <div class="card">
+        <h3>Opções avançadas (administrador)</h3>
+        <p class="hint">Personalizar títulos, nomes dos campos, cores, letra, posições, categorias, cabeçalho e assinaturas. Protegido por PIN.</p>
+        <div class="actions"><button type="button" class="btn" id="adv-open">Abrir opções avançadas</button><button type="button" class="btn" id="adv-lock" hidden>Sair do modo administrador</button></div>
+      </div>
+      <div class="card" id="users-card" hidden>
+        <h3>Utilizadores e privilégios</h3>
+        <ul class="lista" id="users-list"></ul>
+        <div class="actions"><button type="button" class="btn primary" id="user-add">+ Utilizador</button></div>
+      </div>
+      <div class="card" id="congs-card" hidden>
+        <h3>Congregações (lista padrão)</h3>
+        <ul class="lista mini" id="congs-list"></ul>
+        <div class="grid"><div class="field"><label for="cong-new">Nova congregação</label><input id="cong-new" maxlength="80"></div></div>
+        <div class="actions"><button type="button" class="btn" id="cong-add">Acrescentar</button></div>
+      </div>
+      <div class="card danger-zone">
+        <h3>Zona de perigo</h3>
+        <p class="hint">Apaga todos os dados deste telemóvel. Faça antes uma cópia de segurança.</p>
+        <button type="button" class="btn danger" id="apagar">Apagar todos os dados</button>
+      </div>
+      <p class="hint versao">Versão 1.0 · funciona sem internet depois de aberto uma vez.</p>
+    </section>
+  </main>
+
+  <dialog id="dlg" aria-labelledby="dlg-t">
+    <form method="dialog" class="dlg-box">
+      <h2 id="dlg-t"></h2>
+      <p id="dlg-m"></p>
+      <div class="actions"><button value="cancel" class="btn">Cancelar</button><button value="ok" class="btn danger" id="dlg-ok">Confirmar</button></div>
+    </form>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div id="login" class="login" role="dialog" aria-modal="true" aria-labelledby="login-t" hidden>
+    <form id="f-login" class="login-box" novalidate>
+      <img class="login-logo" src="logo.png" alt="Logótipo da Assembleia de Deus Pentecostal" width="96" height="65">
+      <h2 id="login-t">Entrar</h2>
+      <p class="hint" id="login-sub"></p>
+      <div id="login-fields"></div>
+      <p class="err" role="alert" id="login-err"></p>
+      <button type="submit" class="btn primary" id="login-btn">Entrar</button>
+      <button type="button" class="lg-instalar" id="lg-instalar" hidden>📲 Instalar a aplicação neste telemóvel</button>
+    </form>
+  </div>
+  <div id="print-area" aria-hidden="true"></div>
+  <script src="vendor/xlsx.full.min.js"></script>
+  <dialog id="adv" aria-labelledby="adv-t"><div class="dlg-box adv-box"><h2 id="adv-t">Opções avançadas</h2><div id="adv-body"></div>
+    <p class="err" role="alert" id="adv-err"></p><div class="actions"><button type="button" class="btn danger" id="adv-reset">Repor tudo</button><button type="button" class="btn" id="adv-cancel">Cancelar</button><button type="button" class="btn primary" id="adv-save">Guardar</button></div></div></dialog>
+  <script src="vendor/qrcode.min.js"></script>
+  <script src="instalar.js"></script>
+  <script src="app.js"></script>
+  <script src="secretaria.js"></script>
+  <script src="auth.js"></script>
+</body>
+</html>

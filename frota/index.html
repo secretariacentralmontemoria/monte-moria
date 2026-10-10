@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0B2545">
+  <!-- iPhone: instalar no ecrã principal («Adicionar ao ecrã principal» no Safari) -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Frota Ebenézer">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="format-detection" content="telephone=no">
+  <!-- Endereço público da aplicação (preenchido por ferramentas/construir.py --url): usado pelo ficheiro único para indicar onde instalar -->
+  <meta name="endereco-instalacao" content="https://secretariacentralmontemoria.github.io/monte-moria/frota/">
+  <meta name="description" content="Gestão das embarcações Ebenézer: finanças, contas de viagem, salários pagos, inventário, colaboradores, embarcadores e painel estatístico. Funciona sem internet.">
+  <title>Frota Ebenézer — Gestão das Embarcações</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css">
+  <!-- Primeiro script: compatibilidade com iPhones antigos e diagnóstico de arranque (ES5) -->
+  <script src="js/compat.js"></script>
+</head>
+<body>
+  <!-- Aviso visível só quando o JavaScript NÃO corre (ex.: pré-visualização do iPhone ao tocar no ficheiro no WhatsApp ou em Ficheiros) -->
+  <section class="sem-js" aria-labelledby="sem-js-t">
+    <img src="icon.svg" alt="" width="64" height="64">
+    <h1 id="sem-js-t">A aplicação não está a correr</h1>
+    <p>Está a ver uma <b>pré-visualização</b> deste ficheiro. A pré-visualização mostra a página mas não executa a aplicação, por isso a entrada e os botões não respondem.</p>
+    <h2>No iPhone</h2>
+    <ol>
+      <li>Abra o <b>endereço (link) da aplicação</b> no <b>Safari</b> — peça-o ao administrador.</li>
+      <li>Toque em <b>Partilhar</b> (quadrado com seta) e escolha <b>«Adicionar ao ecrã principal»</b>.</li>
+      <li>Abra sempre pelo novo ícone. Depois da primeira abertura funciona <b>sem internet</b>.</li>
+    </ol>
+    <h2>No Android ou no computador</h2>
+    <p>Guarde o ficheiro e abra-o com o <b>Chrome</b>, o <b>Edge</b> ou o <b>Firefox</b>.</p>
+    <p class="sem-js-link"><b>Endereço da aplicação:</b> <a href="https://secretariacentralmontemoria.github.io/monte-moria/frota/">https://secretariacentralmontemoria.github.io/monte-moria/frota/</a></p>
+  </section>
+  <a class="skip" href="#main">Saltar para o conteúdo</a>
+  <div class="app">
+    <!-- Menu lateral (vertical), recolhível; no telemóvel abre como gaveta -->
+    <aside class="menu" id="menu" aria-label="Menu principal">
+      <div class="marca">
+        <img class="logo" id="logo" src="icon.svg" alt="" width="40" height="40">
+        <div class="marca-txt"><p class="marca-nome" id="marca-nome">Frota Ebenézer</p><p class="marca-sub" id="marca-sub">Gestão das Embarcações</p></div>
+      </div>
+      <button type="button" class="perfil-btn" id="perfil-btn" aria-label="O meu perfil e fotografia">
+        <img class="foto" id="foto" src="icon.svg" alt="" width="36" height="36"><span class="perfil-txt"><b id="quem">—</b><small id="quem-perfil"></small></span>
+      </button>
+      <nav aria-label="Secções do sistema">
+        <ul class="nav">
+          <li><button type="button" class="aba-btn" data-aba="painel" title="Painel"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 3h8v8H3zM13 3h8v5h-8zM13 10h8v11h-8zM3 13h8v8H3z"/></svg><span>Painel</span></button></li>
+          <li><button type="button" class="aba-btn" data-aba="financas" title="Finanças"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 17l5-6 4 4 8-9v4h-2V8l-6 7-4-4-5 6z"/><path d="M3 20h18v1H3z"/></svg><span>Finanças</span></button></li>
+          <li><button type="button" class="aba-btn" data-aba="contas" title="Contas"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M5 3h14v18H5zM8 7h8v2H8zm0 4h3v2H8zm5 0h3v2h-3zm-5 4h3v2H8zm5 0h3v2h-3z"/></svg><span>Contas</span></button></li>
+          <li><button type="button" class="aba-btn" data-aba="salarios" title="Salários pagos"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M2 6h20v12H2zm2 2v8h16V8zm8 1a3 3 0 110 6 3 3 0 010-6z"/></svg><span>Salários pagos</span><span class="badge" id="badge-sal" hidden></span></button></li>
+          <li><button type="button" class="aba-btn" data-aba="inventario" title="Inventário"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 4h16v4H4zm1 5h14v11H5zm4 2v2h6v-2z"/></svg><span>Inventário</span></button></li>
+          <li><button type="button" class="aba-btn" data-aba="barcos" title="Embarcações"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 2v12h7zM11 5L5 14h6zM2 16h20l-3 4H5z"/></svg><span>Embarcações</span></button></li>
+          <li><button type="button" class="aba-btn" data-aba="colab" title="Colaboradores"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M9 11a4 4 0 110-8 4 4 0 010 8zm7 0a3 3 0 110-6 3 3 0 010 6zM2 20c0-4 3-6 7-6s7 2 7 6zm15 0c0-2-.6-3.6-1.7-4.8 3.4.2 6.7 1.6 6.7 4.8z"/></svg><span>Colaboradores</span><span class="badge" id="badge-colab" hidden></span></button></li>
+          <li><button type="button" class="aba-btn" data-aba="dados" title="Dados e cópias"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 3c5 0 8 1.3 8 3v12c0 1.7-3 3-8 3s-8-1.3-8-3V6c0-1.7 3-3 8-3zm0 2C8 5 6 6 6 6.2S8 7.5 12 7.5 18 6.4 18 6.2 16 5 12 5zM6 9v3c0 .4 2 1.5 6 1.5s6-1.1 6-1.5V9c-1.5.7-3.6 1-6 1s-4.5-.3-6-1z"/></svg><span>Dados e cópias</span></button></li>
+          <li><button type="button" class="aba-btn" data-aba="users" title="Utilizadores"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 12a5 5 0 110-10 5 5 0 010 10zm-8 9c0-4.4 3.6-7 8-7s8 2.6 8 7z"/></svg><span>Utilizadores</span></button></li>
+          <li><button type="button" class="aba-btn" data-aba="aparencia" title="Personalização"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 3a9 9 0 100 18c1 0 1.6-.8 1.6-1.6 0-.5-.2-.8-.5-1.1-.3-.3-.4-.6-.4-1 0-.9.7-1.6 1.6-1.6H16a5 5 0 005-5c0-4.3-4-7.7-9-7.7zM6.5 12a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm3-4a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm3 4a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/></svg><span>Personalização</span></button></li>
+          <li><button type="button" class="aba-btn instalar-menu" id="instalar-menu" title="Instalar aplicação"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M11 3h2v9.2l3.3-3.3 1.4 1.4L12 16l-5.7-5.7 1.4-1.4 3.3 3.3zM5 18h14v2H5z"/></svg><span id="instalar-menu-txt">Instalar aplicação</span></button></li>
+        </ul>
+      </nav>
+      <div class="menu-rodape">
+        <button type="button" class="icone" id="tema" aria-label="Alternar modo claro/escuro" title="Modo claro/escuro">◐</button>
+        <button type="button" class="icone" id="recolher" aria-label="Recolher o menu" aria-expanded="true" title="Recolher o menu">«</button>
+        <button type="button" class="icone" id="sair" aria-label="Terminar sessão" title="Terminar sessão">⏻</button>
+      </div>
+    </aside>
+    <div class="veu" id="veu" hidden></div>
+
+    <div class="principal">
+      <header class="topo">
+        <button type="button" class="icone" id="abrir-menu" aria-label="Abrir o menu" aria-controls="menu" aria-expanded="false">☰</button>
+        <h1 id="titulo-pagina">Painel</h1>
+        <img class="foto peq" id="foto-topo" src="icon.svg" alt="" width="32" height="32">
+      </header>
+      <main id="main" tabindex="-1">
+        <section id="aba-painel" class="aba" aria-labelledby="h-painel" hidden><div class="aba-topo"><h2 id="h-painel">Painel estatístico</h2><div class="acoes" id="acoes-painel"></div></div><div id="c-painel"></div></section>
+        <section id="aba-financas" class="aba" aria-labelledby="h-financas" hidden><div class="aba-topo"><h2 id="h-financas">Finanças</h2><div class="acoes" id="acoes-financas"></div></div><div id="c-financas"></div></section>
+        <section id="aba-contas" class="aba" aria-labelledby="h-contas" hidden><div class="aba-topo"><h2 id="h-contas">Contas de viagem</h2><div class="acoes" id="acoes-contas"></div></div><div id="c-contas"></div></section>
+        <section id="aba-salarios" class="aba" aria-labelledby="h-salarios" hidden><div class="aba-topo"><h2 id="h-salarios">Controlo de salários pagos</h2><div class="acoes" id="acoes-salarios"></div></div><div id="c-salarios"></div></section>
+        <section id="aba-inventario" class="aba" aria-labelledby="h-inventario" hidden><div class="aba-topo"><h2 id="h-inventario">Inventário de viagem</h2><div class="acoes" id="acoes-inventario"></div></div><div id="c-inventario"></div></section>
+        <section id="aba-barcos" class="aba" aria-labelledby="h-barcos" hidden><div class="aba-topo"><h2 id="h-barcos">Embarcações e datas de implementação</h2><div class="acoes" id="acoes-barcos"></div></div><div id="c-barcos"></div></section>
+        <section id="aba-colab" class="aba" aria-labelledby="h-colab" hidden><div class="aba-topo"><h2 id="h-colab">Colaboradores</h2><div class="acoes" id="acoes-colab"></div></div><div id="c-colab"></div></section>
+        <section id="aba-dados" class="aba" aria-labelledby="h-dados" hidden><div class="aba-topo"><h2 id="h-dados">Dados: exportar, enviar, compilar e cópias</h2><div class="acoes" id="acoes-dados"></div></div><div id="c-dados"></div></section>
+        <section id="aba-users" class="aba" aria-labelledby="h-users" hidden><div class="aba-topo"><h2 id="h-users">Utilizadores e privilégios</h2><div class="acoes" id="acoes-users"></div></div><div id="c-users"></div></section>
+        <section id="aba-aparencia" class="aba" aria-labelledby="h-aparencia" hidden><div class="aba-topo"><h2 id="h-aparencia">Personalização</h2><div class="acoes" id="acoes-aparencia"></div></div><div id="c-aparencia"></div></section>
+      </main>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <div class="login" id="login" role="dialog" aria-modal="true" aria-labelledby="login-t" hidden>
+    <form class="login-box" id="f-login" novalidate>
+      <img src="icon.svg" alt="" width="64" height="64" class="login-logo" id="login-logo">
+      <h2 id="login-t">Entrar</h2>
+      <p class="dica" id="login-sub">Introduza o utilizador e a palavra-passe.</p>
+      <div class="campo"><label for="lg-user">Utilizador</label><input id="lg-user" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" maxlength="40" required></div>
+      <div class="campo"><label for="lg-pw">Palavra-passe</label><input id="lg-pw" type="password" autocomplete="current-password" maxlength="60" required></div>
+      <p class="erro" id="lg-err" role="alert"></p>
+      <button type="submit" class="btn prim">Entrar</button>
+      <button type="button" class="lg-instalar" id="lg-instalar" hidden>📲 Instalar a aplicação neste aparelho</button>
+    </form>
+  </div>
+
+  <div id="print-area" aria-hidden="true"></div>
+
+  <script src="vendor/chart.umd.min.js"></script>
+  <script src="vendor/chartjs-plugin-datalabels.min.js"></script>
+  <script src="vendor/xlsx.full.min.js"></script>
+  <script src="js/nucleo.js"></script>
+  <script src="js/graficos.js"></script>
+  <script src="js/imagem.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/marca.js"></script>
+  <script src="js/barcos.js"></script>
+  <script src="js/embarcadores.js"></script>
+  <script src="js/financas.js"></script>
+  <script src="js/contas.js"></script>
+  <script src="js/salarios.js"></script>
+  <script src="js/inventario.js"></script>
+  <script src="js/painel.js"></script>
+  <script src="js/dados.js"></script>
+  <script src="vendor/qrcode.min.js"></script>
+  <script src="js/instalar.js"></script>
+  <script src="js/arranque.js"></script>
+</body>
+</html>
