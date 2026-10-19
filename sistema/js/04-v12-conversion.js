@@ -28,7 +28,7 @@
   window.logActivity=function(action,entity,summary){
     try{ oldLog(action,entity,summary); }catch(e){}
     // O log também persiste a alteração. Isto corrige ações antigas que apenas chamavam logActivity.
-    try{ DB.auditLog=Array.isArray(DB.auditLog)?DB.auditLog:[]; localStorage.setItem(STORAGE_KEY,JSON.stringify(DB)); }catch(e){}
+    try{ DB.auditLog=Array.isArray(DB.auditLog)?DB.auditLog:[]; MMStoreX.save(DB); }catch(e){}
   };
 
   function persistV11(action,entity,summary,render=true){

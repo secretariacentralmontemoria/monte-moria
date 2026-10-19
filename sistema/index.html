@@ -8,7 +8,11 @@
 <title>Centro Monte Moriá · Sistema de Gestão de Membros</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/styles.css?v=2dc1618b">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#13233D">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
 </head>
 <body>
 <div id="app">
@@ -114,7 +118,7 @@
         </div>
         <div class="topbar-actions">
           <button class="btn ghost sm" id="btn-customize-dash">🎨 Personalizar Painel</button>
-          <button class="btn ghost sm" id="btn-export-json">Exportar cópia (.json)</button>
+          <button class="btn ghost sm" id="btn-export-json">Cópia de segurança</button>
           <button class="btn gold sm" id="btn-goto-add">+ Novo Membro</button>
         </div>
       </div>
@@ -171,7 +175,7 @@
         </div>
         <div class="topbar-actions">
           <button class="btn ghost sm" id="btn-export-csv">Exportar CSV</button>
-          <label class="u-b202c6 btn ghost sm">Importar backup (substituir)
+          <label class="u-b202c6 btn ghost sm">Restaurar cópia (substituir)
             <input type="file" id="file-import" accept=".json" class="u-cb4589">
           </label>
           <button class="btn ghost sm" id="btn-merge-import">+ Base de Dados Extra</button>
@@ -459,7 +463,7 @@
           <li>Faixa etária recalculada a partir da Data de Nascimento sempre que esta é válida (foram encontradas 288 faixas etárias divergentes da idade real).</li>
           <li>Datas em formatos mistos (dd/mm/aaaa, dd.mm.aaaa, texto livre como "Não Batizado") normalizadas quando possível.</li>
           <li>Duas datas de nascimento futuras/placeholder (idade resultante ≤ 2 anos) ignoradas por serem inválidas para um membro adulto.</li>
-          <li>Um par de registos com nome duplicado ("Mariana Armando Júlio") assinalado para verificação manual.</li>
+          <li>Um par de registos com nome duplicado assinalado para verificação manual.</li>
         </ul>
         <div class="note">Estas correções foram aplicadas apenas na cópia de trabalho apresentada nesta ferramenta. O ficheiro Excel original enviado não foi alterado.</div>
       </div>
@@ -961,26 +965,29 @@
 <script src="vendor/xlsx.full.min.js"></script>
 <script src="vendor/chartjs-plugin-datalabels.min.js"></script>
 <script src="data/seed.js"></script>
-<script src="js/00-v14-graficos.js"></script>
-<script src="js/00b-v14-persistencia.js"></script>
-<script src="js/01-app-core.js"></script>
-<script src="js/02-security-v8.js"></script>
-<script src="js/03-v10-universal.js"></script>
-<script src="js/04-v12-conversion.js"></script>
-<script src="js/05-v11-persistence.js"></script>
-<script src="js/06-v14-graficos-aparencia.js"></script>
-<script src="js/07-v14-atividades.js"></script>
-<script src="js/08-v14-organigrama.js"></script>
-<script src="js/09-v14-varredura.js"></script>
-<script src="js/10-v15-integridade.js"></script>
-<script src="js/11-v15-paineis.js"></script>
-<script src="js/12-v16.js"></script>
-<script src="js/13-v17-relatorio.js"></script>
-<script src="js/14-v18-menu.js"></script>
-<script src="js/15-v19-compilar.js"></script>
-<script src="js/16-v20-secretaria.js"></script>
-<script src="js/17-v21.js"></script>
-<script src="js/18-v22.js"></script>
-<script src="js/19-v23.js"></script>
+<script src="js/00-boot-v24.js?v=2dc1618b"></script>
+<script type="text/x-mm-app" src="js/00-v14-graficos.js?v=2dc1618b"></script>
+<script type="text/x-mm-app" src="js/00b-v14-persistencia.js?v=2dc1618b"></script>
+<script type="text/x-mm-app" src="js/01-app-core.js?v=2dc1618b"></script>
+<script type="text/x-mm-app" src="js/02-security-v8.js?v=2dc1618b"></script>
+<script type="text/x-mm-app" src="js/03-v10-universal.js?v=2dc1618b"></script>
+<script type="text/x-mm-app" src="js/04-v12-conversion.js?v=2dc1618b"></script>
+<script type="text/x-mm-app" src="js/05-v11-persistence.js?v=2dc1618b"></script>
+<script type="text/x-mm-app" src="js/06-v14-graficos-aparencia.js?v=2dc1618b"></script>
+<script type="text/x-mm-app" src="js/07-v14-atividades.js?v=2dc1618b"></script>
+<script type="text/x-mm-app" src="js/08-v14-organigrama.js?v=2dc1618b"></script>
+<script type="text/x-mm-app" src="js/09-v14-varredura.js?v=2dc1618b"></script>
+<script type="text/x-mm-app" src="js/10-v15-integridade.js?v=2dc1618b"></script>
+<script type="text/x-mm-app" src="js/11-v15-paineis.js?v=2dc1618b"></script>
+<script type="text/x-mm-app" src="js/12-v16.js?v=2dc1618b"></script>
+<script type="text/x-mm-app" src="js/13-v17-relatorio.js?v=2dc1618b"></script>
+<script type="text/x-mm-app" src="js/14-v18-menu.js?v=2dc1618b"></script>
+<script type="text/x-mm-app" src="js/15-v19-compilar.js?v=2dc1618b"></script>
+<script type="text/x-mm-app" src="js/16-v20-secretaria.js?v=2dc1618b"></script>
+<script type="text/x-mm-app" src="js/17-v21.js?v=2dc1618b"></script>
+<script type="text/x-mm-app" src="js/18-v22.js?v=2dc1618b"></script>
+<script type="text/x-mm-app" src="js/19-v23.js?v=2dc1618b"></script>
+<script type="text/x-mm-app" src="js/20-v24-v26.js?v=2dc1618b"></script>
+<script src="js/pwa.js?v=2dc1618b"></script>
 </body>
 </html>

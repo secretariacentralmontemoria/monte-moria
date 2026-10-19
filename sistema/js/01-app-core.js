@@ -56,7 +56,7 @@ function syncAllTabs(){
 let DB = null; // { members, disciplina, visitantes, financas, financasCongregacoes, cultos, inventario, atividades, trash, users, settings, dashboardConfig }
 
 function loadDB(){
-  const raw = localStorage.getItem(STORAGE_KEY);
+  const raw = MMStoreX.read();
   let d = null;
   if (raw){
     try{ d = JSON.parse(raw); }catch(e){ d = null; }
@@ -99,9 +99,9 @@ function loadDB(){
   return d;
 }
 function saveDB(){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(DB));
+  MMStoreX.save(DB);
 }
-DB = loadDB();
+DB = loadDB(); MMStoreX.attach(DB);
 syncAllTabs();
 function baseTabLabel(tab){ return (tab && tab.label) || ''; }
 function displayTabLabel(tab){
@@ -1036,12 +1036,14 @@ document.getElementById('btn-export-csv').addEventListener('click', ()=>{
 });
 
 function exportBackup(){
+  if (window.MMBackup) { MMBackup.open(); return; }
   downloadFile('backup_monte_moria_' + new Date().toISOString().slice(0,10) + '.json', JSON.stringify(DB, null, 2), 'application/json');
   toast('Cópia de segurança exportada.');
 }
 document.getElementById('btn-export-json').addEventListener('click', exportBackup);
 
 document.getElementById('file-import').addEventListener('change', (e)=>{
+  if (window.MMBackup) { MMBackup.fromInput(e); return; }
   const file = e.target.files[0];
   if (!file) return;
   requirePassword('admin', 'Esta ação substitui TODOS os dados atuais. Introduza a palavra-passe para confirmar.', ()=>{
@@ -2245,11 +2247,11 @@ function processV9Import(file,collection,label){
 function injectV9TransferBars(){
   document.querySelectorAll('section.section').forEach(sec=>{
     if(sec.querySelector('.v9-transfer')) return; const key=sec.id.replace(/^sec-/,''); const collection=TAB_COLLECTIONS[key] || (key==='ajuda' ? 'settings' : null); if(!collection) return;
-    const bar=document.createElement('div'); bar.className='v9-transfer'; bar.innerHTML=`<button class="btn ghost sm" data-v9-export="${key}">⇩ Exportar dados</button><button class="btn ghost sm" data-v9-import="${key}">⇧ Importar dados</button><span class="sub">Importação protegida por Admin</span>`;
+    const bar=document.createElement('div'); bar.className='v9-transfer'; bar.innerHTML=`<button class="btn ghost sm" data-v9-export="${key}" data-coll="${collection}">⇩ Exportar dados</button><button class="btn ghost sm" data-v9-import="${key}" data-coll="${collection}">⇧ Importar dados</button><span class="sub">Importação protegida por Admin</span>`;
     const top=sec.querySelector('.topbar'); if(top) top.appendChild(bar); else sec.prepend(bar);
   });
-  document.querySelectorAll('[data-v9-export]').forEach(b=>b.onclick=()=>{const k=b.dataset.v9Export;exportCollectionData(TAB_COLLECTIONS[k],TAB_LABELS_V9[k]);});
-  document.querySelectorAll('[data-v9-import]').forEach(b=>b.onclick=()=>{const k=b.dataset.v9Import;triggerCollectionImport(TAB_COLLECTIONS[k],TAB_LABELS_V9[k]);});
+  document.querySelectorAll('[data-v9-export]').forEach(b=>b.onclick=()=>{const k=b.dataset.v9Export;exportCollectionData(b.dataset.coll||TAB_COLLECTIONS[k],TAB_LABELS_V9[k]||k);});
+  document.querySelectorAll('[data-v9-import]').forEach(b=>b.onclick=()=>{const k=b.dataset.v9Import;triggerCollectionImport(b.dataset.coll||TAB_COLLECTIONS[k],TAB_LABELS_V9[k]||k);});
 }
 setTimeout(injectV9TransferBars,50);
 /* ============================================================
@@ -2574,7 +2576,7 @@ function renderAjuda(){
       <h3 class="u-b27251">Bem-vindo(a)</h3>
       <p class="u-1386d5 sub">Este é o Sistema de Gestão de Membros do Centro Monte Moriá. Todos os dados ficam guardados
       automaticamente neste navegador (computador/dispositivo). Para levar os dados para outro computador, use
-      "Exportar cópia (.json)" no Painel e depois "Importar backup" na Base de Dados.</p>
+      «Cópia de segurança» no Painel (ou em Aparência &amp; Configuração) e, no outro computador, «Restaurar cópia». A cópia leva todos os dados e toda a personalização.</p>
     </div>
 
     <div class="u-8b5267 grid2">
@@ -2625,7 +2627,7 @@ function renderAjuda(){
     <div class="card">
       <h3 class="u-2576bf">🔒 Sobre a palavra-passe de administração</h3>
       <p class="u-4c7b29 sub">Algumas ações sensíveis (editar/eliminar Disciplina e Visitantes, Adicionar em Massa, Carregar Base de Dados Extra) pedem a palavra-passe de administração fornecida pela liderança do centro. Depois de introduzida corretamente uma vez, fica desbloqueada para o resto da sessão atual (até fechar a página).</p>
-      <div class="note">Todos os dados ficam guardados apenas neste navegador. Exporte cópias de segurança regularmente através do botão "Exportar cópia (.json)".</div>
+      <div class="note">Todos os dados ficam guardados apenas neste navegador. Exporte cópias de segurança completas regularmente através do botão «Cópia de segurança» (Painel).</div>
     </div>
   `;
 }
@@ -3218,7 +3220,7 @@ document.getElementById('btn-ap-order-reset').addEventListener('click', ()=>{
   saveDB();
   logActivity('Repôs a ordem padrão do menu', 'Aparência', '—');
   toast('Ordem do menu reposta. A página vai recarregar…');
-  setTimeout(()=>window.location.reload(), 700);
+  setTimeout(()=>MMStoreX.flush().finally(()=>window.location.reload()), 700);
   });
 });
 

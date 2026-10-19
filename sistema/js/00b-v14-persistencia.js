@@ -67,7 +67,7 @@
       const run = () => put(ARQ, [{ id: `antes-da-recuperacao-${Date.now()}`, ts: new Date().toISOString(), data: JSON.parse(JSON.stringify(DB)) }]).then(() => {
         Object.keys(DB).forEach((k) => { delete DB[k]; }); Object.assign(DB, copy);
         if (typeof saveDB === 'function') saveDB(); if (typeof logActivity === 'function') logActivity('Recuperou', 'Base de dados', `cópia interna de ${f(a)}`);
-        MMUI.toast('Cópia mais recente recuperada. A base anterior ficou arquivada no navegador.'); setTimeout(() => location.reload(), 900);
+        MMUI.toast('Cópia mais recente recuperada. A base anterior ficou arquivada no navegador.'); setTimeout(() => MMStoreX.flush().finally(() => location.reload()), 900);
       });
       if (typeof requireAdminAction === 'function') requireAdminAction('admin', 'Introduza a palavra-passe para recuperar a cópia interna mais recente.', run); else run();
     });

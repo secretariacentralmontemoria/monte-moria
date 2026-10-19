@@ -5,7 +5,7 @@
   const IDB_NAME='CMMSistemaGestaoDB', IDB_STORE='estado';
   function mirror(){
     try{
-      if(!window.indexedDB)return;
+      if(!window.indexedDB||(window.MMStoreX&&MMStoreX.mode==='idb'))return;
       const req=indexedDB.open(IDB_NAME,1);
       req.onupgradeneeded=e=>{if(!e.target.result.objectStoreNames.contains(IDB_STORE))e.target.result.createObjectStore(IDB_STORE);};
       req.onsuccess=e=>{try{const db=e.target.result,tx=db.transaction(IDB_STORE,'readwrite');tx.objectStore(IDB_STORE).put(clone(DB),'latest');}catch(err){}};

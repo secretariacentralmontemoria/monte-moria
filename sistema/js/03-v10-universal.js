@@ -5,13 +5,13 @@
     financas:'financas', cultos:'cultos', inventario:'inventario', atividades:'atividades',
     listas:'settings', aparencia:'settings', reports:null, dashboard:null, ajuda:null, lixeira:'trash', utilizadores:'users'
   };
-  const DATA_KEYS=['members','disciplina','visitantes','financas','financasCongregacoes','cultos','inventario','atividades','trash','users','settings','dashboardConfig','convertidos'];
+  const DATA_KEYS=['members','disciplina','visitantes','financas','financasCongregacoes','cultos','inventario','atividades','trash','users','settings','dashboardConfig','convertidos','organigrama','secretaria'];
   function clone(x){try{return JSON.parse(JSON.stringify(x));}catch(e){return null;}}
   function dataState(){
     const x={}; DATA_KEYS.forEach(k=>x[k]=clone(DB[k])); return x;
   }
   function dataSignature(){
-    try{return JSON.stringify(dataState());}catch(e){return ''}
+    try{const x=dataState(); if(x.settings){x.settings=Object.assign({},x.settings); delete x.settings.lastAdminLogin; delete x.settings._v7SelectedProvince;} return JSON.stringify(x);}catch(e){return ''}
   }
   window.__v10LastDataSignature = dataSignature();
   DB.eventSnapshots=Array.isArray(DB.eventSnapshots)?DB.eventSnapshots:[];
@@ -34,7 +34,7 @@
   const _log_V10=logActivity;
   window.logActivity=function(action,entity,summary){
     _log_V10(action,entity,summary);
-    try{localStorage.setItem(STORAGE_KEY,JSON.stringify(DB));}catch(e){}
+    try{MMStoreX.save(DB);}catch(e){}
   };
 
   function currentSectionKey(){
@@ -54,6 +54,7 @@
   function exportCurrent(kind){
     const sec=currentSectionKey(), key=V10_KEYS[sec];
     if(kind==='backup'){
+      if(window.MMBackup){ MMBackup.open(); return; }
       const out={version:'V10',exportedAt:new Date().toISOString(),source:'Centro Monte Moriá — Sistema de Gestão de Membros'};
       DATA_KEYS.forEach(k=>out[k]=clone(DB[k]));
       downloadFile('backup-sistema-'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify(out,null,2),'application/json;charset=utf-8');

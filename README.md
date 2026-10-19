@@ -4,9 +4,9 @@ Site estático pronto para o **GitHub Pages**:
 
 ```
 /                      página inicial (index.html, inicio.css, inicio.js: código QR para instalar; vendor/qrcode.min.js)
-├── sistema/           Sistema de Gestão de Membros (V23) — computador da sede
-│   ├── index.html
-│   ├── css/  js/  vendor/
+├── sistema/           Sistema de Gestão de Membros (V26) — computador da sede (instalável, funciona sem internet)
+│   ├── index.html  manifest.webmanifest  sw.js  icons/
+│   ├── css/  js/  vendor/   (js/00-boot-v24.js lê a base do navegador e carrega os módulos pela ordem)
 │   └── data/seed.js   versão pública: SEM dados pessoais (só o logótipo)
 ├── congregacao/       Finanças e Secretaria da Congregação — telemóvel, funciona sem internet
 │   ├── index.html  styles.css  compat.js  instalar.js  app.js  secretaria.js  auth.js
@@ -53,14 +53,29 @@ um quadro de diagnóstico: peça uma captura de ecrã. Entrada obrigatória com 
 O GitHub só guarda **o programa**. Os dados (membros, finanças, Secretaria) ficam **no navegador de cada aparelho**
 e nunca são enviados para o GitHub.
 
-**Passar os dados actuais para a versão publicada** (computador da sede):
-1. Na versão local que já usa (ficheiro .html): Base de Dados → **Exportar cópia (.json)**.
-2. Na versão publicada (`…/sistema/`): Base de Dados → **Importar backup (substituir)** → escolher esse ficheiro.
-3. Guarde o ficheiro .json num local privado. **Nunca o carregue para o GitHub.**
+Os dados ficam na base de dados interna do navegador (IndexedDB, sem o limite de 5 MB) e, se quiser, também num ficheiro
+do computador / OneDrive (Aparência & Configuração › «Onde ficam os dados»).
+
+**Cópia de segurança completa** (Painel › **Cópia de segurança**, ou Aparência & Configuração › «Cópia de segurança completa»):
+um único ficheiro com **todos** os dados e **toda** a personalização — membros, registos, finanças, cultos, inventário,
+actividades, organigrama, secretaria, lixeira, utilizadores e permissões, logótipo, listas, campos, gráficos, painéis, cores,
+abas próprias, registo de actividades, recuperação da palavra-passe, tema e menu. Opcional: incluir os estados anteriores
+(aba Eventos) e proteger o ficheiro com palavra-passe (AES-256). O ficheiro leva uma verificação de integridade (SHA-256).
+
+**Restaurar / passar os dados para outro computador ou para a versão publicada:**
+1. No computador de origem: **Cópia de segurança** › *Exportar cópia completa*.
+2. No destino (`…/sistema/` ou o ficheiro .html): Base de Dados › **Restaurar cópia (substituir)** (ou *Restaurar uma cópia…*)
+   → escolher o ficheiro → rever a comparação (o que existe agora e o que vem na cópia) → *Substituir tudo e restaurar*.
+3. O estado anterior fica em **Eventos** («Antes de restaurar a cópia de segurança») para poder voltar atrás.
+   Aceita também as cópias antigas (*Exportar cópia (.json)* e *Backup completo* das versões V10–V25).
+4. Guarde o ficheiro .json num local privado. **Nunca o carregue para o GitHub.**
+
+**Instalar no computador da sede:** abra `…/sistema/` no Chrome ou no Edge › ícone **Instalar** na barra de endereço.
+Depois abre como programa e funciona sem internet (com internet carrega sempre a versão publicada mais recente).
 
 ## 4. Segurança — ler antes de publicar
 
-- **Não publique** a versão local `Centro_Monte_Moria_Sistema_Gestao_Membros_V23.html` nem cópias de segurança:
+- **Não publique** a versão local `Centro_Monte_Moria_Sistema_Gestao_Membros_V26.html` nem cópias de segurança:
   contêm dados pessoais (membros, disciplina, finanças). Esta pasta já vem sem esses dados.
 - O repositório é **público**: qualquer pessoa pode ver o código. As palavras-passe iniciais da aplicação das congregações
   **não estão no código** (só as suas impressões digitais), mas devem ser **mudadas logo** em Definições › Utilizadores.
@@ -72,4 +87,5 @@ e nunca são enviados para o GitHub.
 
 Substitua os ficheiros alterados (Upload files) e faça *Commit*. Para os telemóveis receberem a versão nova da aplicação
 das congregações, mude o nome da cache em `congregacao/sw.js` (ex.: `mm-congregacao-v5` → `mm-congregacao-v6`)
-e abra a aplicação com internet uma vez.
+e abra a aplicação com internet uma vez. O sistema da sede (`sistema/`) actualiza-se sozinho quando abre com internet
+(o nome da cache em `sistema/sw.js` e os `?v=` em `sistema/index.html` mudam em cada versão).
