@@ -1,4 +1,4 @@
-const CACHE = "mm-congregacao-v5";
+const CACHE = "mm-congregacao-v6";
 const FILES = [
   "./",
   "./index.html",
@@ -7,6 +7,7 @@ const FILES = [
   "./instalar.js",
   "./app.js",
   "./secretaria.js",
+  "./membros.js",
   "./auth.js",
   "./vendor/xlsx.full.min.js",
   "./vendor/qrcode.min.js",

@@ -355,9 +355,11 @@
     const d = document.createElement("dialog");
     d.setAttribute("aria-label", "Imprimir");
     const ops = [["rel", "Relatório de ".concat(mesLbl(S.cur))], ["lanc", "Lista de lançamentos de ".concat(mesLbl(S.cur))], ["sec", "Informação da Secretaria (documento aberto)"]].filter(([k]) => k === "sec" ? can("sec", "read") : can("fin", "read"));
-    d.innerHTML = '<form method="dialog" class="dlg-box" novalidate><h2>Imprimir</h2><fieldset class="fs"><legend>Folhas a imprimir</legend>'.concat(ops.map(([k, l]) => '<label class="check"><input type="checkbox" name="f" value="'.concat(k, '"').concat(k === padrao ? " checked" : "", "> ").concat(esc(l), "</label>")).join(""), '</fieldset>\n      <div class="field"><label for="pr-p">Papel</label><select id="pr-p"><option value="A4 portrait">A4 retrato (padrão)</option><option value="A4 landscape">A4 paisagem</option><option value="A5 portrait">A5</option><option value="letter portrait">Carta</option></select></div>\n      <p class="err" role="alert"></p><div class="actions"><button value="cancel" class="btn">Cancelar</button><button type="button" class="btn primary" data-ok>Imprimir</button></div></form>');
+    d.innerHTML = '<form method="dialog" class="dlg-box" novalidate><h2>Imprimir</h2><fieldset class="fs"><legend>Folhas a imprimir</legend>'.concat(ops.map(([k, l]) => '<label class="check"><input type="checkbox" name="f" value="'.concat(k, '"').concat(k === padrao ? " checked" : "", "> ").concat(esc(l), "</label>")).join(""), '</fieldset>\n      <label class="check" id="pr-vz-l"><input type="checkbox" id="pr-vz" checked> Secretaria: ocultar as secções em branco (mantém a ordem dos assuntos)</label>\n      <div class="field"><label for="pr-p">Papel</label><select id="pr-p"><option value="A4 portrait">A4 retrato (padrão)</option><option value="A4 landscape">A4 paisagem</option><option value="A5 portrait">A5</option><option value="letter portrait">Carta</option></select></div>\n      <p class="err" role="alert"></p><div class="actions"><button value="cancel" class="btn">Cancelar</button><button type="button" class="btn primary" data-ok>Imprimir</button></div></form>');
     document.body.appendChild(d);
     d.addEventListener("close", () => d.remove());
+    const vzSync = () => { const on = !!d.querySelector('[name="f"][value="sec"]:checked'); const lb = d.querySelector("#pr-vz-l"); const ver = on && !!(window.CongSec && window.CongSec.vazias()); lb.hidden = !ver; lb.style.display = ver ? "" : "none"; };
+    d.addEventListener("change", vzSync); vzSync();
     d.querySelector("[data-ok]").addEventListener("click", () => {
       const sel = [...d.querySelectorAll('[name="f"]:checked')].map((i) => i.value);
       if (!sel.length) {
@@ -369,7 +371,7 @@
       const lst = ofMonth(S.cur).sort((x, y) => x.data.localeCompare(y.data));
       const pages = {
         rel: '<article class="sheet p-sheet">'.concat(sheet(S.cur, c), "</article>"),
-        sec: '<article class="sheet p-sheet sec-folha">'.concat($("#sec-folha").innerHTML, "</article>"),
+        sec: '<article class="sheet p-sheet sec-folha">'.concat(window.CongSec ? window.CongSec.folha(d.querySelector("#pr-vz").checked) : $("#sec-folha").innerHTML, "</article>"),
         lanc: '<article class="sheet p-sheet"><h2>Lançamentos de '.concat(esc(mesLbl(S.cur)), " — ").concat(esc(S.perfil.congregacao), '</h2><table class="p-list"><thead><tr><th>Data</th><th>Tipo</th><th>Categoria</th><th>Descrição</th><th>Valor (Kz)</th></tr></thead><tbody>').concat(lst.map((l) => "<tr><td>".concat(esc(fmtData(l.data)), "</td><td>").concat(esc(l.tipo), "</td><td>").concat(esc(l.categoria), "</td><td>").concat(esc(l.descricao), "</td><td>").concat(kz(l.valor), "</td></tr>")).join(""), "</tbody></table></article>")
       };
       area.innerHTML = sel.map((k) => pages[k]).join("");

@@ -36,7 +36,7 @@
       saudacao: "Saudações em nome do nosso Senhor Jesus Cristo!",
       fecho: "Feito na Secretaria da congregação ".concat(cong, " aos ").concat(String(n.getDate()).padStart(2, "0"), " de ").concat(MES[n.getMonth()], " de ").concat(n.getFullYear(), "."),
       assin: [{ cargo: "O Secretário", nome: "" }, { cargo: "O Líder", nome: "" }],
-      mostrarVazias: true,
+      mostrarVazias: false,
       itens: []
     };
     X.docs.push(d);
@@ -44,11 +44,12 @@
     A.save();
     render();
   };
-  const folha = (d) => {
+  const folha = (d, ocultar) => {
     const K = A.cfg();
+    const semVazias = ocultar === void 0 ? !d.mostrarVazias : !!ocultar;
     return '<header class="v20-cab"><img src="'.concat(esc($(".logo").getAttribute("src")), '" alt="Logótipo da ADP"><p>').concat(esc(K.cab.l1), "</p><p>").concat(esc(K.cab.l2), "</p><p>").concat(esc(A.S.perfil.congregacao || ""), '</p></header><hr class="v20-linha">\n    <p><b>Assunto: ').concat(esc(d.assunto), '</b></p><p class="v20-dest">').concat(esc(d.destinatario), "</p><p>").concat(esc(d.saudacao), "</p>\n    ").concat(cats().map((c) => {
       const L = itens(d, c.id);
-      if (!L.length && !d.mostrarVazias) return "";
+      if (!L.length && semVazias) return "";
       return '<h3 class="v20-st">'.concat(esc(c.nome), "</h3>").concat(c.intro && L.length ? "<p>".concat(esc(c.intro), "</p>") : "", '<ul class="v20-ul">').concat(L.map((i) => "<li>".concat(esc(i.texto), "</li>")).join(""), "</ul>");
     }).join(""), '\n    <p class="v20-fecho">').concat(esc(d.fecho), '</p><div class="v20-assin">').concat((d.assin || []).map((a) => "<div><p>".concat(esc(a.cargo), "</p><span></span><p>").concat(esc(nomeAssin(a)), "</p></div>")).join(""), "</div>");
   };
@@ -279,16 +280,28 @@
       }
     }
   });
+  window.CongSec = { folha: (ocultar) => { const d = doc(); return d ? folha(d, ocultar) : ""; }, vazias: () => { const d = doc(); return d ? cats().filter((c) => !itens(d, c.id).length).length : 0; } };
   $("#sec-print").addEventListener("click", () => {
     render();
     A.imprimir("sec");
   });
-  $("#sec-word").addEventListener("click", async () => {
+  /** Pergunta antes de exportar/imprimir: ocultar as secções sem itens (marcado por omissão). */
+  const escolherVazias = (titulo, okTxt, cb) => {
+    const d = doc(); if (!d) return;
+    const vaz = cats().filter((c) => !itens(d, c.id).length).map((c) => c.nome);
+    if (!vaz.length) { cb(true); return; }
+    const g = document.createElement("dialog"); g.setAttribute("aria-label", titulo);
+    g.innerHTML = '<form method="dialog" class="dlg-box" novalidate><h2>'.concat(esc(titulo), '</h2><p class="hint">Secções sem itens neste documento: ').concat(esc(vaz.join(", ")), '.</p><label class="check"><input type="checkbox" id="sv-oc" checked> Ocultar as secções em branco (as restantes mantêm a ordem dos assuntos)</label><div class="actions"><button value="cancel" class="btn">Cancelar</button><button type="button" class="btn primary" data-ok>').concat(esc(okTxt), "</button></div></form>");
+    document.body.appendChild(g); g.addEventListener("close", () => g.remove());
+    g.querySelector("[data-ok]").addEventListener("click", () => { const oc = g.querySelector("#sv-oc").checked; g.close(); cb(oc); });
+    g.showModal();
+  };
+  $("#sec-word").addEventListener("click", () => escolherVazias("Exportar para Word", "Exportar", async (ocultar) => {
     const d = doc();
     if (!d) return;
-    const h = '<html><head><meta charset="utf-8"><style>body{font-family:"Times New Roman",serif;font-size:12pt}.v20-cab{text-align:center;font-weight:bold}.v20-cab p{margin:0}.v20-st{text-decoration:underline;font-size:12pt}.v20-dest{margin-left:60%}.v20-fecho{text-align:center}</style></head><body>'.concat(folha(d).replace(/<img[^>]*>/, ""), "</body></html>");
+    const h = '<html><head><meta charset="utf-8"><style>body{font-family:"Times New Roman",serif;font-size:12pt}.v20-cab{text-align:center;font-weight:bold}.v20-cab p{margin:0}.v20-st{text-decoration:underline;font-size:12pt}.v20-dest{margin-left:60%}.v20-fecho{text-align:center}</style></head><body>'.concat(folha(d, ocultar).replace(/<img[^>]*>/, ""), "</body></html>");
     await A.partilhar(new Blob(["\uFEFF", h], { type: "application/msword" }), "".concat(A.slug(d.assunto), ".doc"), d.assunto);
-  });
+  }));
   $("#sec-enviar").addEventListener("click", async () => {
     const S = A.S;
     if (!S.perfil.congregacao) {
@@ -296,7 +309,7 @@
       return;
     }
     const X = D();
-    const docs = X.docs.map((d) => ({ id: d.id, assunto: d.assunto, destinatario: d.destinatario, saudacao: d.saudacao, fecho: d.fecho, assin: d.assin, seccoes: cats().map((c) => ({ categoria: c.nome, crit: c.crit, intro: c.intro, itens: itens(d, c.id).map((i) => i.texto) })).filter((s) => s.itens.length) }));
+    const docs = X.docs.map((d) => ({ id: d.id, assunto: d.assunto, destinatario: d.destinatario, saudacao: d.saudacao, fecho: d.fecho, assin: d.assin, seccoes: cats().map((c, n) => ({ ordem: n + 1, categoria: c.nome, crit: c.crit, intro: c.intro, itens: itens(d, c.id).map((i) => i.texto) })).filter((s) => s.itens.length) }));
     const p = { formato: "mm-secretaria", versao: 1, gerado: (/* @__PURE__ */ new Date()).toISOString(), congregacao: S.perfil.congregacao, responsavel: S.perfil.responsavel, lider: S.perfil.lider || "", docs };
     const r = await A.partilhar(new Blob([JSON.stringify(p, null, 1)], { type: "application/json" }), "Secretaria_".concat(A.slug(S.perfil.congregacao), "_").concat(A.today(), ".json"), "Secretaria — ".concat(S.perfil.congregacao));
     if (r !== "cancelado") A.toast(r === "partilhado" ? "Documentos partilhados." : "Ficheiro guardado em Transferências.");

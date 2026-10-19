@@ -65,8 +65,25 @@ A cópia NÃO é o envio para a sede: serve só para não perder dados.
 ## 6. Secretaria da congregação
 **Secretaria** → «+ Nova informação» → preencha Assunto, Destinatário, Saudação e Fecho → «+ Acrescentar» em cada categoria
 (Pena disciplinar, Exonerações, Nomeações, Casamentos…) → as categorias ficam ordenadas por criticidade →
+as **secções sem itens não aparecem na folha** (a opção «Mostrar na folha as secções sem itens» volta a mostrá-las) e, ao **imprimir** ou exportar para **Word**, pode escolher «Ocultar as secções em branco» — as secções preenchidas mantêm sempre a ordem dos assuntos (ex.: só aparece «Pena disciplinar» se tiver itens) → o envio à sede leva só as secções preenchidas →
 «Ocultar campos» deixa só a folha →
 «Imprimir / PDF», «Word (.doc)» ou **«Enviar à sede (.json)»**. Na sede: **Secretaria › Importar das congregações**.
+
+## 6b. Membros, Ficha e Inventário (como no sistema da sede)
+**Membros** → «+ Novo membro»: dados pessoais, contactos, endereço, filiação, dados eclesiásticos, observação e fotografia
+(reduzida automaticamente para poupar espaço). Pesquisa por nome, BI, telefone ou nº do cartão; filtros por situação, género,
+departamento e faixa etária. **Importar** aceita Excel, CSV e JSON — incluindo a cópia do sistema da sede: escolha a igreja
+(ex.: CONG_MONTE SINAI) e só entram os membros que ainda não existem (mesmo BI, ou mesmo nome e data de nascimento).
+«Eliminados» repõe membros apagados por engano.
+**Ficha** → escolha o membro (ou escreva o nome) → **Imprimir / PDF (A4)**: a mesma ficha individual do sistema da sede, com as
+assinaturas do secretário e do líder.
+**Inventário** → «+ Novo item»: item, categoria, quantidade, estado (Bom, Razoável, Mau, Danificado), localização, data de
+aquisição e valor unitário; exportar em Excel/CSV e imprimir.
+**Enviar à sede**: no separador Membros (ou em Enviar) → «Base de dados dos membros (.json)». Na sede: Base de Dados ›
+**«+ Base de Dados Extra»** → escolher o ficheiro (os membros já registados são ignorados).
+**Quem pode:** o perfil SECRETARIA edita os membros e fichas e vê o inventário; FINANCAS edita o inventário e vê os membros;
+o administrador muda isto em Definições › Utilizadores («Membros e fichas» e «Inventário»).
+Os membros e o inventário entram na **cópia de segurança**.
 
 ## 7. Opções avançadas (administrador, com PIN)
 **Definições › Abrir opções avançadas** → defina um PIN (4–8 algarismos) → personalize títulos dos separadores e dos campos,

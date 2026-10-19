@@ -1447,3 +1447,86 @@ a.ins-btn.ins-grande {
 .lg-instalar:active {
   transform: translateY(1px);
 }
+
+/* =====================================================================
+   v2 — Membros, Ficha de membro e Inventário
+   ===================================================================== */
+.tabs {
+  display: -webkit-box;
+  display: flex;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+.tab {
+  -webkit-box-flex: 1;
+  flex: 1 0 auto;
+  min-width: 86px;
+  padding: 0 10px;
+}
+.mem-bar, #inv-bar { flex-wrap: wrap; }
+.mem-lista li { grid-template-columns: auto 1fr auto; align-items: center; }
+#inv-lista li { grid-template-columns: 1fr auto auto; align-items: center; }
+.mf-av {
+  width: 42px; height: 42px; border-radius: 50%; overflow: hidden; display: grid; place-items: center;
+  background: var(--surface-2, #efe9da); border: 1px solid var(--line); color: var(--navy); font-weight: 700; font-size: .85rem;
+}
+:root[data-theme=dark] .mf-av { color: var(--text); }
+.mf-av img { width: 100%; height: 100%; object-fit: cover; }
+.mf-av.grande { width: 96px; height: 116px; border-radius: 8px; font-size: .8rem; color: var(--muted); }
+.mf-foto { display: flex; gap: var(--s3); align-items: center; margin-bottom: var(--s3); }
+.mf-foto .hint { margin: 4px 0 0; }
+dialog.m-largo { max-width: min(96vw, 880px); width: 100%; }
+.mi-err { max-height: 200px; overflow: auto; font-size: .85rem; color: var(--bad); }
+.env-h { margin: var(--s5) 0 var(--s2); }
+.mf-tag { display: inline-block; padding: 2px 9px; margin: 0 4px 4px 0; border-radius: 99px; border: 1px solid var(--line); font-size: .78rem; font-weight: 600; background: var(--surface); }
+.mf-tag.ok { color: var(--ok); border-color: currentColor; }
+.mf-tag.bad { color: var(--bad); border-color: currentColor; }
+.mf-tag.warn { color: var(--gold); border-color: currentColor; }
+
+/* Ficha individual (ecrã e impressão A4) */
+.mf-ficha .mf-cab img { max-height: 64px; }
+.mf-topo { display: flex; justify-content: space-between; gap: var(--s3); align-items: flex-start; margin: var(--s3) 0; }
+.mf-nome { margin: 0 0 6px; font-size: 1.35rem; }
+.mf-tags { margin: 0; }
+.mf-fotoficha { flex: none; width: 108px; height: 134px; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; display: grid; place-items: center; color: var(--muted); font-size: .8rem; background: var(--surface); }
+.mf-fotoficha img { width: 100%; height: 100%; object-fit: cover; }
+.mf-ficha .mf-sec, .mf-sec { margin: 18px 0 var(--s2); padding-bottom: 4px; border-bottom: 2px solid var(--gold); font-size: .95rem; text-transform: uppercase; letter-spacing: .04em; }
+.mf-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr)); gap: var(--s2) var(--s3); }
+.mf-grid.c2 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
+.mf-it span { display: block; font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .03em; }
+.mf-it b { display: block; font-weight: 600; overflow-wrap: anywhere; }
+.mf-obs { min-height: 48px; border: 1px solid var(--line); border-radius: 6px; padding: var(--s2); white-space: pre-wrap; }
+.mf-rodape { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: var(--s4); margin-top: var(--s5); font-size: .8rem; color: var(--muted); }
+.mf-assin { min-width: 180px; text-align: center; }
+.mf-assin span { display: block; border-bottom: 1px solid var(--text); height: 28px; margin-bottom: 4px; }
+.mf-assin p { margin: 0; color: var(--text); }
+@media (max-width: 520px) {
+  .mem-lista li { grid-template-columns: auto 1fr; }
+  .mem-lista .l-acts, #inv-lista .l-acts { grid-column: 1 / -1; }
+  #inv-lista li { grid-template-columns: 1fr auto; }
+  .mf-topo { flex-direction: column-reverse; }
+}
+@media print {
+  .mf-ficha { font-size: 10pt; }
+  .mf-ficha .mf-cab img { max-height: 46px; }
+  .mf-ficha .mf-cab p { margin: 0; }
+  .mf-topo { margin: 6px 0; }
+  .mf-fotoficha { width: 88px; height: 110px; }
+  .mf-sec { margin: 10px 0 4px; padding-bottom: 2px; font-size: 10pt; }
+  .mf-grid { gap: 3px 10px; }
+  .mf-obs { min-height: 30px; padding: 4px 6px; }
+  .mf-rodape { margin-top: 16px; }
+  .mf-assin span { height: 22px; }
+  .mf-ficha .mf-nome { font-size: 15pt; margin-bottom: 3px; }
+  .mf-ficha .mf-it span { font-size: 7pt; }
+  .mf-ficha .mf-it b { font-size: 9.5pt; }
+  .mf-ficha .mf-tag { font-size: 8pt; padding: 1px 7px; }
+  .mf-ficha .mf-rodape, .mf-ficha .mf-assin p { font-size: 8.5pt; }
+  .mf-ficha .v20-cab p { font-size: 9.5pt; line-height: 1.25; }
+  .mf-ficha .v20-linha { margin: 4px 0; }
+  .mf-grid { grid-template-columns: repeat(3, 1fr) !important; }
+  .mf-grid.c2 { grid-template-columns: repeat(2, 1fr) !important; }
+  .mf-sec { border-bottom-color: #8a6a1f; }
+  .mf-tag { border-color: #999 !important; color: #000 !important; }
+}

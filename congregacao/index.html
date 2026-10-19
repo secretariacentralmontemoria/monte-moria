@@ -55,6 +55,9 @@
     <button type="button" class="tab" data-tab="lanc" aria-current="page">Lançamentos</button>
     <button type="button" class="tab" data-tab="rel">Relatório</button>
     <button type="button" class="tab" data-tab="sec">Secretaria</button>
+    <button type="button" class="tab" data-tab="mem">Membros</button>
+    <button type="button" class="tab" data-tab="ficha">Ficha</button>
+    <button type="button" class="tab" data-tab="inv">Inventário</button>
     <button type="button" class="tab" data-tab="enviar">Enviar</button>
     <button type="button" class="tab" data-tab="def">Definições</button>
   </nav>
@@ -110,9 +113,55 @@
         <div class="field full"><label for="sc-dest">Destinatário</label><input id="sc-dest" data-k="destinatario" maxlength="120"></div>
         <div class="field full"><label for="sc-saud">Saudação</label><input id="sc-saud" data-k="saudacao" maxlength="160"></div>
         <div class="field full"><label for="sc-fecho">Fecho (local e data)</label><input id="sc-fecho" data-k="fecho" maxlength="200"></div></div>
-        <label class="check"><input type="checkbox" id="sc-vazias" data-k="mostrarVazias"> Mostrar categorias sem itens</label></form>
+        <label class="check"><input type="checkbox" id="sc-vazias" data-k="mostrarVazias"> Mostrar na folha as secções sem itens (por omissão ficam ocultas; ao imprimir e exportar pode escolher)</label></form>
       <div id="sec-cats"></div>
       <article class="card sheet sec-folha" id="sec-folha" aria-label="Pré-visualização da Informação"></article>
+    </section>
+
+    <section id="tab-mem" class="panel" aria-labelledby="h-mem" hidden>
+      <h2 id="h-mem">Base de dados dos membros</h2>
+      <div class="kpis" id="mem-kpis" aria-live="polite"></div>
+      <div class="actions mem-bar" id="mem-bar">
+        <button type="button" class="btn primary" id="mem-novo" data-ed>+ Novo membro</button>
+        <button type="button" class="btn" id="mem-imp" data-ed>Importar (Excel, CSV, JSON)</button>
+        <button type="button" class="btn" data-mexp="xlsx">Exportar Excel</button>
+        <button type="button" class="btn" data-mexp="csv">Exportar CSV</button>
+        <button type="button" class="btn" data-mexp="print">Imprimir lista</button>
+        <button type="button" class="btn" data-mexp="sede">Enviar à sede (.json)</button>
+        <button type="button" class="btn" id="mem-rep" data-ed>Eliminados</button>
+      </div>
+      <div class="card form"><div class="grid mem-fil" id="mem-fil"></div></div>
+      <div class="card">
+        <div class="row-head"><h3>Membros</h3><span class="hint" id="mem-conta" aria-live="polite"></span></div>
+        <ul class="lista mem-lista" id="mem-lista"></ul>
+      </div>
+    </section>
+
+    <section id="tab-ficha" class="panel" aria-labelledby="h-ficha" hidden>
+      <h2 id="h-ficha">Ficha individual do membro</h2>
+      <div class="card form"><div class="grid">
+        <div class="field"><label for="fi-q">Procurar (nome, BI ou cartão)</label><input id="fi-q" type="search" autocomplete="off" placeholder="Escreva pelo menos 2 letras"></div>
+        <div class="field"><label for="fi-sel">Membro</label><select id="fi-sel"></select></div></div>
+        <div class="actions"><button type="button" class="btn" id="fi-prev" aria-label="Membro anterior">‹ Anterior</button><button type="button" class="btn" id="fi-next" aria-label="Membro seguinte">Seguinte ›</button>
+          <button type="button" class="btn primary" id="fi-print">Imprimir / PDF (A4)</button><button type="button" class="btn" id="fi-edit" hidden>Editar membro</button></div></div>
+      <article class="card sheet mf-ficha" id="fi-folha" aria-label="Ficha do membro" aria-live="polite"></article>
+    </section>
+
+    <section id="tab-inv" class="panel" aria-labelledby="h-inv" hidden>
+      <h2 id="h-inv">Inventário da congregação</h2>
+      <div class="kpis" id="inv-kpis" aria-live="polite"></div>
+      <div class="actions" id="inv-bar">
+        <button type="button" class="btn primary" id="inv-novo" data-ed>+ Novo item</button>
+        <button type="button" class="btn" data-iexp="xlsx">Exportar Excel</button>
+        <button type="button" class="btn" data-iexp="csv">Exportar CSV</button>
+        <button type="button" class="btn" data-iexp="print">Imprimir</button>
+        <button type="button" class="btn" data-iexp="sede">Enviar à sede (.json)</button>
+      </div>
+      <div class="card form"><div class="grid" id="inv-fil"></div></div>
+      <div class="card">
+        <div class="row-head"><h3>Itens</h3><span class="hint" id="inv-conta" aria-live="polite"></span></div>
+        <ul class="lista" id="inv-lista"></ul>
+      </div>
     </section>
 
     <section id="tab-enviar" class="panel" aria-labelledby="h-enviar" hidden>
@@ -129,6 +178,12 @@
         <button type="button" class="envio" data-exp="txt"><b>Resumo em texto</b><span>Para WhatsApp/SMS. Só informativo (não se importa).</span></button>
       </div>
       <label class="check"><input type="checkbox" id="exp-todos"> Enviar todos os meses (em vez de só o mês escolhido)</label>
+      <h3 class="env-h">Membros e inventário</h3>
+      <div class="cards-envio">
+        <button type="button" class="envio" data-mexp="sede"><b>Base de dados dos membros (.json)</b><span>Na sede: Base de Dados › «+ Base de Dados Extra» (os membros já registados são ignorados).</span></button>
+        <button type="button" class="envio" data-mexp="xlsx"><b>Membros em Excel (.xlsx)</b><span>Colunas iguais às do sistema da sede.</span></button>
+        <button type="button" class="envio" data-iexp="xlsx"><b>Inventário em Excel (.xlsx)</b><span>Lista de bens da congregação.</span></button>
+      </div>
       <div class="card"><h3>Envios feitos</h3><ul class="lista mini" id="envios"></ul></div>
     </section>
 
@@ -198,7 +253,7 @@
         <p class="hint">Apaga todos os dados deste telemóvel. Faça antes uma cópia de segurança.</p>
         <button type="button" class="btn danger" id="apagar">Apagar todos os dados</button>
       </div>
-      <p class="hint versao">Versão 1.0 · funciona sem internet depois de aberto uma vez.</p>
+      <p class="hint versao">Versão 2.0 (membros, fichas e inventário) · funciona sem internet depois de aberto uma vez.</p>
     </section>
   </main>
 
@@ -229,6 +284,7 @@
   <script src="instalar.js"></script>
   <script src="app.js"></script>
   <script src="secretaria.js"></script>
+  <script src="membros.js"></script>
   <script src="auth.js"></script>
 </body>
 </html>

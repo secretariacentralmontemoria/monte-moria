@@ -5,16 +5,16 @@
   const { esc, clean, $ } = A;
   const SES = "mmCongSessao";
   const PERFIS = {
-    admin: { nome: "Administrador", fin: "edit", sec: "edit", enviar: true, def: true },
-    tesoureiro: { nome: "Tesoureiro(a)", fin: "edit", sec: "read", enviar: true, def: false },
-    secretario: { nome: "Secretário(a)", fin: "read", sec: "edit", enviar: true, def: false },
-    consulta: { nome: "Só consulta", fin: "read", sec: "read", enviar: false, def: false }
+    admin: { nome: "Administrador", fin: "edit", sec: "edit", mem: "edit", inv: "edit", enviar: true, def: true },
+    tesoureiro: { nome: "Tesoureiro(a)", fin: "edit", sec: "read", mem: "read", inv: "edit", enviar: true, def: false },
+    secretario: { nome: "Secretário(a)", fin: "read", sec: "edit", mem: "edit", inv: "read", enviar: true, def: false },
+    consulta: { nome: "Só consulta", fin: "read", sec: "read", mem: "read", inv: "read", enviar: false, def: false }
   };
   const NIVEL = { none: 0, read: 1, edit: 2 };
   const PADRAO = [
-    { user: "admin", nome: "Administrador", perfil: "admin", priv: { fin: "edit", sec: "edit", enviar: true, def: true }, salt: "mmA7q2", h2: "s2:90a26944adcf3f4b4ab5b167942e308c3d7d72e1fe614b762ab0b640bf169aeb", h1: "f1:63fcaea1d8911ae5" },
-    { user: "secretaria", nome: "Secretaria", perfil: "secretario", priv: { fin: "read", sec: "edit", enviar: true, def: false }, salt: "mmS3k9", h2: "s2:77f31502bcba86a4d411c68c23f0525e5ab8dbbc60156d7fbce4a5d6efeb9563", h1: "f1:3ae3c92b85e3c913" },
-    { user: "financas", nome: "Finanças", perfil: "tesoureiro", priv: { fin: "edit", sec: "read", enviar: true, def: false }, salt: "mmF5x1", h2: "s2:aec6116b7d9c31369d58f9c4da9e159a5b60620a79bd52fc9ae58137ddcd42d6", h1: "f1:576760a58b3f1c91" }
+    { user: "admin", nome: "Administrador", perfil: "admin", priv: { fin: "edit", sec: "edit", mem: "edit", inv: "edit", enviar: true, def: true }, salt: "mmA7q2", h2: "s2:90a26944adcf3f4b4ab5b167942e308c3d7d72e1fe614b762ab0b640bf169aeb", h1: "f1:63fcaea1d8911ae5" },
+    { user: "secretaria", nome: "Secretaria", perfil: "secretario", priv: { fin: "read", sec: "edit", mem: "edit", inv: "read", enviar: true, def: false }, salt: "mmS3k9", h2: "s2:77f31502bcba86a4d411c68c23f0525e5ab8dbbc60156d7fbce4a5d6efeb9563", h1: "f1:3ae3c92b85e3c913" },
+    { user: "financas", nome: "Finanças", perfil: "tesoureiro", priv: { fin: "edit", sec: "read", mem: "read", inv: "edit", enviar: true, def: false }, salt: "mmF5x1", h2: "s2:aec6116b7d9c31369d58f9c4da9e159a5b60620a79bd52fc9ae58137ddcd42d6", h1: "f1:576760a58b3f1c91" }
   ];
   let cur = null;
   const normU = (t) => clean(t, 40).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\s+/g, "");
@@ -41,7 +41,8 @@
     if (cur.perfil === "admin") return true;
     const p = cur.priv || PERFIS[cur.perfil] || {};
     if (area === "enviar" || area === "def") return !!p[area];
-    return (NIVEL[p[area]] || 0) >= NIVEL[lvl];
+    const nv = p[area] !== void 0 ? p[area] : (PERFIS[cur.perfil] || {})[area];
+    return (NIVEL[nv] || 0) >= NIVEL[lvl];
   };
   const isAdmin = () => !!cur && cur.perfil === "admin";
   const semear = async () => {
@@ -99,12 +100,14 @@
   });
   const aplicar = () => {
     var _a;
-    const vis = { lanc: can("fin", "read"), rel: can("fin", "read"), sec: can("sec", "read"), enviar: can("enviar"), def: true };
+    const vis = { lanc: can("fin", "read"), rel: can("fin", "read"), sec: can("sec", "read"), mem: can("mem", "read"), ficha: can("mem", "read"), inv: can("inv", "read"), enviar: can("enviar"), def: true };
     document.querySelectorAll(".tab").forEach((b) => {
       b.hidden = !vis[b.dataset.tab];
     });
     document.body.classList.toggle("ro-fin", !can("fin"));
     document.body.classList.toggle("ro-sec", !can("sec"));
+    document.body.classList.toggle("ro-mem", !can("mem"));
+    document.body.classList.toggle("ro-inv", !can("inv"));
     document.body.classList.toggle("no-def", !can("def"));
     document.body.classList.toggle("is-admin", isAdmin());
     $("#users-card").hidden = !isAdmin();
@@ -112,7 +115,7 @@
     document.querySelectorAll("#tab-def .card:not(#users-card):not(#congs-card):not(#f-nomes):not(#inst-card)").forEach((c) => {
       c.hidden = !can("def");
     });
-    const first = ["lanc", "rel", "sec", "enviar", "def"].find((k) => vis[k]);
+    const first = ["lanc", "rel", "sec", "mem", "ficha", "inv", "enviar", "def"].find((k) => vis[k]);
     const atual = (_a = document.querySelector('.tab[aria-current="page"]')) == null ? void 0 : _a.dataset.tab;
     if (!vis[atual]) A.setTab(first);
     $("#logout").title = cur ? "Terminar sessão (".concat(cur.nome, ")") : "Terminar sessão";
@@ -211,7 +214,7 @@
     const nv = { edit: "editar", read: "ver", none: "sem acesso" };
     $("#users-list").innerHTML = L.map((u) => {
       const p = u.perfil === "admin" ? PERFIS.admin : u.priv || PERFIS[u.perfil];
-      return '<li><div class="l-main"><b>'.concat(esc(u.nome), "</b><small>").concat(esc(u.user), " · ").concat(esc((PERFIS[u.perfil] || {}).nome || u.perfil)).concat(u.ativo === false ? " · inactivo" : "", " · Finanças: ").concat(nv[p.fin], " · Secretaria: ").concat(nv[p.sec]).concat(p.enviar ? " · envia" : "").concat(p.def ? " · definições" : "", "</small></div>\n      ").concat(u.padrao && !u.mudouPw ? '<small class="aviso">palavra-passe padrão — altere-a</small>' : "", '<div class="l-acts"><button type="button" class="btn small" data-ue="').concat(esc(u.id), '">Editar</button><button type="button" class="btn small danger" data-ud="').concat(esc(u.id), '"').concat(u.id === cur.id ? " disabled" : "", ">Eliminar</button></div></li>");
+      return '<li><div class="l-main"><b>'.concat(esc(u.nome), "</b><small>").concat(esc(u.user), " · ").concat(esc((PERFIS[u.perfil] || {}).nome || u.perfil)).concat(u.ativo === false ? " · inactivo" : "", " · Finanças: ").concat(nv[p.fin], " · Secretaria: ").concat(nv[p.sec], " · Membros: ").concat(nv[p.mem || (PERFIS[u.perfil] || {}).mem || "read"], " · Inventário: ").concat(nv[p.inv || (PERFIS[u.perfil] || {}).inv || "read"]).concat(p.enviar ? " · envia" : "").concat(p.def ? " · definições" : "", "</small></div>\n      ").concat(u.padrao && !u.mudouPw ? '<small class="aviso">palavra-passe padrão — altere-a</small>' : "", '<div class="l-acts"><button type="button" class="btn small" data-ue="').concat(esc(u.id), '">Editar</button><button type="button" class="btn small danger" data-ud="').concat(esc(u.id), '"').concat(u.id === cur.id ? " disabled" : "", ">Eliminar</button></div></li>");
     }).join("");
     $("#congs-list").innerHTML = S().congs.map((c, i) => '<li><div class="l-main">'.concat(esc(c)).concat(c === S().perfil.congregacao ? " <small>(esta)</small>" : "", '</div><div class="l-acts"><button type="button" class="btn small danger" data-cd="').concat(i, '"').concat(c === S().perfil.congregacao ? " disabled" : "", ' aria-label="Remover ').concat(esc(c), '">Remover</button></div></li>')).join("");
   };
@@ -221,7 +224,7 @@
     const sel = (id, v) => '<select id="'.concat(id, '">').concat([["edit", "Editar"], ["read", "Só ver"], ["none", "Sem acesso"]].map(([k, l]) => '<option value="'.concat(k, '"').concat(v === k ? " selected" : "", ">").concat(l, "</option>")).join(""), "</select>");
     const d = document.createElement("dialog");
     d.setAttribute("aria-label", u ? "Editar utilizador" : "Novo utilizador");
-    d.innerHTML = '<form method="dialog" class="dlg-box" novalidate><h2>'.concat(u ? "Editar utilizador" : "Novo utilizador", '</h2><div class="grid">\n      <div class="field"><label for="ud-n">Nome *</label><input id="ud-n" maxlength="80" value="').concat(esc(u ? u.nome : ""), '"></div><div class="field"><label for="ud-u">Utilizador *</label><input id="ud-u" maxlength="30" autocapitalize="none" autocorrect="off" spellcheck="false" value="').concat(esc(u ? u.user : ""), '"></div>\n      <div class="field"><label for="ud-p">Palavra-passe ').concat(u ? "(vazio = mantém)" : "* (mín. 6)", '</label><input id="ud-p" type="password" maxlength="60" autocomplete="new-password"></div>\n      <div class="field"><label for="ud-f">Perfil</label><select id="ud-f">').concat(Object.entries(PERFIS).map(([k, v]) => '<option value="'.concat(k, '"').concat((u ? u.perfil : "tesoureiro") === k ? " selected" : "", ">").concat(v.nome, "</option>")).join(""), '</select></div>\n      <div class="field"><label for="ud-fin">Finanças</label>').concat(sel("ud-fin", p.fin), '</div><div class="field"><label for="ud-sec">Secretaria</label>').concat(sel("ud-sec", p.sec), '</div></div>\n      <label class="check"><input type="checkbox" id="ud-env"').concat(p.enviar ? " checked" : "", '> Pode enviar ficheiros à sede</label><label class="check"><input type="checkbox" id="ud-def"').concat(p.def ? " checked" : "", '> Pode alterar definições e fazer cópias</label><label class="check"><input type="checkbox" id="ud-at"').concat(!u || u.ativo !== false ? " checked" : "", '> Activo</label>\n      <p class="err" role="alert"></p><div class="actions"><button value="cancel" class="btn">Cancelar</button><button type="button" class="btn primary" data-ok>Guardar</button></div></form>');
+    d.innerHTML = '<form method="dialog" class="dlg-box" novalidate><h2>'.concat(u ? "Editar utilizador" : "Novo utilizador", '</h2><div class="grid">\n      <div class="field"><label for="ud-n">Nome *</label><input id="ud-n" maxlength="80" value="').concat(esc(u ? u.nome : ""), '"></div><div class="field"><label for="ud-u">Utilizador *</label><input id="ud-u" maxlength="30" autocapitalize="none" autocorrect="off" spellcheck="false" value="').concat(esc(u ? u.user : ""), '"></div>\n      <div class="field"><label for="ud-p">Palavra-passe ').concat(u ? "(vazio = mantém)" : "* (mín. 6)", '</label><input id="ud-p" type="password" maxlength="60" autocomplete="new-password"></div>\n      <div class="field"><label for="ud-f">Perfil</label><select id="ud-f">').concat(Object.entries(PERFIS).map(([k, v]) => '<option value="'.concat(k, '"').concat((u ? u.perfil : "tesoureiro") === k ? " selected" : "", ">").concat(v.nome, "</option>")).join(""), '</select></div>\n      <div class="field"><label for="ud-fin">Finanças</label>').concat(sel("ud-fin", p.fin), '</div><div class="field"><label for="ud-sec">Secretaria</label>').concat(sel("ud-sec", p.sec), '</div><div class="field"><label for="ud-mem">Membros e fichas</label>').concat(sel("ud-mem", p.mem || (PERFIS[u ? u.perfil : "tesoureiro"] || {}).mem || "read"), '</div><div class="field"><label for="ud-inv">Inventário</label>').concat(sel("ud-inv", p.inv || (PERFIS[u ? u.perfil : "tesoureiro"] || {}).inv || "read"), '</div></div>\n      <label class="check"><input type="checkbox" id="ud-env"').concat(p.enviar ? " checked" : "", '> Pode enviar ficheiros à sede</label><label class="check"><input type="checkbox" id="ud-def"').concat(p.def ? " checked" : "", '> Pode alterar definições e fazer cópias</label><label class="check"><input type="checkbox" id="ud-at"').concat(!u || u.ativo !== false ? " checked" : "", '> Activo</label>\n      <p class="err" role="alert"></p><div class="actions"><button value="cancel" class="btn">Cancelar</button><button type="button" class="btn primary" data-ok>Guardar</button></div></form>');
     document.body.appendChild(d);
     d.addEventListener("close", () => d.remove());
     const q = (id) => d.querySelector(id);
@@ -229,6 +232,8 @@
       const P = PERFIS[e.target.value];
       q("#ud-fin").value = P.fin;
       q("#ud-sec").value = P.sec;
+      q("#ud-mem").value = P.mem;
+      q("#ud-inv").value = P.inv;
       q("#ud-env").checked = P.enviar;
       q("#ud-def").checked = P.def;
     });
@@ -265,7 +270,7 @@
           err.textContent = "Não pode desactivar o seu próprio utilizador.";
           return;
         }
-        const priv = { fin: q("#ud-fin").value, sec: q("#ud-sec").value, enviar: q("#ud-env").checked, def: q("#ud-def").checked };
+        const priv = { fin: q("#ud-fin").value, sec: q("#ud-sec").value, mem: q("#ud-mem").value, inv: q("#ud-inv").value, enviar: q("#ud-env").checked, def: q("#ud-def").checked };
         const x = u || { id: A.uid(), salt: A.uid(), criado: (/* @__PURE__ */ new Date()).toISOString() };
         Object.assign(x, { nome, user, perfil, priv, ativo });
         if (pw) {
