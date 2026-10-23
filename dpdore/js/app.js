@@ -169,8 +169,17 @@ const MODULES = [
 const MODULE_NAME = Object.fromEntries(MODULES.map((m) => [m[0], m[1]]));
 /** Nome visível de uma aba (o administrador pode renomear em Aparência → Menu). */
 const modName = (id) => (typeof DB !== 'undefined' && DB?.settings?.nav?.[id]?.label) || MODULE_NAME[id] || id;
-/* Versão publicada: sem palavra-passe predefinida (valor aleatório, diferente em cada aparelho; o administrador é criado na primeira utilização). */
-const ADMIN_DEFAULT_PASS = window.DPDORE_PUBLIC ? Array.from(crypto.getRandomValues(new Uint32Array(4)), (x) => x.toString(36)).join('') : '';
+/* Utilizadores predefinidos de uma instalação nova. As palavras-passe NÃO estão no código: só as impressões digitais (SHA-256).
+   No primeiro acesso cada utilizador é obrigado a escolher uma palavra-passe nova. */
+const ADMIN_DEFAULT_HASH = '91bf51e4763ed7c676aacf6504e5060de20c7b8b655106712a744499612f926f';
+const DEFAULT_HASHES = [ADMIN_DEFAULT_HASH, 'e90b01dd15c4c7f6da345c8e6d3206ab2ec321751b6aa70979a5d3d8c0f2bd42', '03b53452e6e56f5868f4ed7b935fc471ef44a1ed03db02a1a48b226cb956231e', '486b05531594ff442a54aea5e9d8c5738acc57729b89ee38e14412acb9780f9c'];
+const DEFAULT_USERS = [
+  { id: 'u_admin', user: 'admin', nome: 'Administrador', role: 'admin', hash: ADMIN_DEFAULT_HASH },
+  { id: 'u_planeamento', user: 'planeamento', nome: 'Planeamento', role: 'user', hash: DEFAULT_HASHES[1], area: ['planning', 'viability', 'coverage'] },
+  { id: 'u_survey', user: 'survey', nome: 'Survey', role: 'user', hash: DEFAULT_HASHES[2], area: ['survey'] }
+];
+/** Permissões de um utilizador predefinido: vê as abas comuns e edita / remove só na sua área. */
+function areaPerms(area) { const p = defaultPerms('user'); Object.keys(p).forEach((k) => { if (p[k].view) p[k] = { view: true, edit: area.includes(k), del: area.includes(k) }; }); return p; }
 /** Lanches do Departamento: quinta-feira, alerta com uma semana de antecedência, 1 responsável por dia (pode ser 2). */
 const SNACK_DEFAULTS = { weekday: 4, hora: '10:00', local: 'Sala do departamento', endereco: '', lat: '', lon: '', alertDays: 7, perDay: 1, valor: '' };
 
@@ -266,8 +275,8 @@ function freshDB() {
   lists.survey = surveyCats;
   return {
     version: 8,
-    settings: { brand: 'DPDORE', subtitle: 'Sistema de Gestão Operacional', look: deepClone(DEFAULT_LOOK), nav: {}, customFields: {}, adminHash: pwHash(ADMIN_DEFAULT_PASS), elevateMinutes: 10, slaDays: 15, viabilitySla: 10, sessionMinutes: 120, backupDays: 7, fh: {}, amd: { iva: 14, retencao: 0, basis: 'total' } },
-    users: [{ id: 'u_admin', user: 'admin', nome: 'Administrador', hash: pwHash(ADMIN_DEFAULT_PASS), role: 'admin', active: true, perms: defaultPerms('admin') }],
+    settings: { brand: 'DPDORE', subtitle: 'Sistema de Gestão Operacional', look: deepClone(DEFAULT_LOOK), nav: {}, customFields: {}, adminHash: ADMIN_DEFAULT_HASH, elevateMinutes: 10, slaDays: 15, viabilitySla: 10, sessionMinutes: 120, backupDays: 7, fh: {}, amd: { iva: 14, retencao: 0, basis: 'total' } },
+    users: DEFAULT_USERS.map((u) => ({ id: u.id, user: u.user, nome: u.nome, hash: u.hash, role: u.role, active: true, mustChange: true, perms: u.role === 'admin' ? defaultPerms('admin') : areaPerms(u.area) })),
     lists,
     vrfs: defaultVrfs(),
     ipPlans: [], netRouters: [], netOlts: [], gponRoutes: [],
@@ -3921,8 +3930,8 @@ const Alerts = {
     const A = []; const add = (sev, mod, msg, det = null) => A.push({ sev, mod: modName(mod) || mod, msg, view: (typeof det === 'string' ? det : det?.view) || mod, det: det && typeof det === 'object' ? det : null });
     const sla = num(DB.settings.slaDays) || 15; const t = todayISO();
     // Segurança
-    if (DB.settings.adminHash === pwHash(ADMIN_DEFAULT_PASS)) add('warn', 'users', 'A palavra-passe de administrador é a predefinida. Altere-a em Utilizadores.');
-    if (DB.users.some((u) => u.role === 'admin' && u.hash === pwHash(ADMIN_DEFAULT_PASS))) add('warn', 'users', 'Existe um utilizador administrador com a palavra-passe predefinida.');
+    if (DEFAULT_HASHES.includes(DB.settings.adminHash)) add('warn', 'users', 'A palavra-passe de administrador é a predefinida. Altere-a em Utilizadores.');
+    if (DB.users.some((u) => u.active && DEFAULT_HASHES.includes(u.hash))) add('warn', 'users', 'Há utilizadores com a palavra-passe predefinida. Cada um tem de a mudar no próximo acesso.');
     // Survey
     DB.surveys.filter(surveyOpen).forEach((r) => { const d = surveyDays(r); if (d !== null && d > sla) add('bad', 'survey', `Survey ${r.ID} (${r['NOME CLIENTE']}) em aberto há ${d} dias — SLA de ${sla} dias ultrapassado.`, { rec: r, title: `Survey ${r.ID}` }); });
     DB.surveys.filter((r) => !r['RESPONSÁVEL']).forEach((r) => add('warn', 'survey', `Survey ${r.ID} sem responsável atribuído.`, { rec: r, title: `Survey ${r.ID}` }));
@@ -12544,6 +12553,7 @@ const BkDir = {
   schedule() { clearTimeout(BkDir.timer); BkDir.timer = setTimeout(() => BkDir.write(false), 4000); },
   /** No arranque: procura uma cópia mais recente na pasta (ou pergunta se quer procurar). */
   async startup() {
+    if (Auth.user?.mustChange) { setTimeout(() => BkDir.startup().catch(() => {}), 2500); return; } // primeiro a mudança da palavra-passe
     const C = BkDir.cfg(); if (!Auth.isAdmin() || C.startup === 'none' || sessionStorage.getItem('dpdore_bk_checked')) return; sessionStorage.setItem('dpdore_bk_checked', '1');
     if (BkDir.handle && BkDir.perm !== 'granted') { BkDir.askAuth(); return; }
     if (!BkDir.on()) { if (C.startup === 'ask-always' || (C.startup === 'ask-newer' && !DB.settings.bkDir?.asked)) { DB.settings.bkDir = { ...C, asked: true }; Store.save(); BkDir.askSearch(); } return; }
@@ -12680,45 +12690,43 @@ const AppShare = {
 window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); AppShare.deferred = e; });
 App.actions['app-share'] = () => AppShare.open();
 
-
-/* ============ 11x. V9.0 — VERSÃO PUBLICADA: PRIMEIRA UTILIZAÇÃO SEGURA ============
-   Na versão publicada não existe palavra-passe predefinida no código: na primeira abertura
-   (base nova) o sistema pede para criar o administrador; a seguir pode restaurar a cópia de segurança. */
-const FirstRun = {
-  pending() { return !!window.DPDORE_PUBLIC && typeof DB !== 'undefined' && DB && !DB.meta?.setupDone && DB.users.length === 1 && DB.users[0].id === 'u_admin'; },
-  strong(p) { return p.length >= 10 && /[a-z]/i.test(p) && /\d/.test(p) && /[^a-z0-9]|[A-Z]/.test(p); },
-  open() {
-    $('#login')?.setAttribute('hidden', '');
-    const m = UI.modal({ title: 'Primeira utilização — criar o administrador', size: 'narrow',
-      body: `<p class="note">Este aparelho ainda não tem dados. Crie o utilizador administrador (a palavra-passe fica só neste aparelho, cifrada). Depois pode restaurar a sua cópia de segurança em «Cópias de segurança».</p>
-        <form class="form-grid" data-fr novalidate><div class="full"><label for="frn">Nome</label><input id="frn" name="nome" maxlength="60" autocomplete="name" required></div>
-        <div class="full"><label for="fru">Utilizador</label><input id="fru" name="user" maxlength="30" value="admin" autocomplete="username" required></div>
-        <div class="full"><label for="frp">Palavra-passe (mín. 10, com letras, números e uma maiúscula ou símbolo)</label><input id="frp" name="p1" type="password" autocomplete="new-password" required></div>
-        <div class="full"><label for="frq">Repetir a palavra-passe</label><input id="frq" name="p2" type="password" autocomplete="new-password" required></div>
+/* ============ 11x. V9.0 — MUDANÇA OBRIGATÓRIA DA PALAVRA-PASSE NO PRIMEIRO ACESSO ============
+   Os utilizadores predefinidos (admin, planeamento, survey) — e qualquer utilizador marcado pelo administrador —
+   têm de escolher uma palavra-passe nova logo depois de entrar. A janela não se fecha sem a mudança. */
+const PwChange = {
+  rule(u) { return u?.role === 'admin' ? { min: 10, txt: 'mínimo 10 caracteres, com letras, números e uma maiúscula ou símbolo', ok: (p) => p.length >= 10 && /[a-z]/i.test(p) && /\d/.test(p) && (/[A-Z]/.test(p) || /[^a-z0-9]/i.test(p)) }
+    : { min: 8, txt: 'mínimo 8 caracteres, com letras e números', ok: (p) => p.length >= 8 && /[a-z]/i.test(p) && /\d/.test(p) }; },
+  force() {
+    const u = Auth.user; if (!u || !u.mustChange || $('[data-pwforce]')) return;
+    const R = PwChange.rule(u);
+    const m = UI.modal({ title: 'Mude a sua palavra-passe', size: 'narrow',
+      body: `<form class="form-grid" data-pwforce novalidate><p class="note full">Primeiro acesso de <b>${esc(u.nome || u.user)}</b> (${esc(u.user)}): por segurança, escolha uma palavra-passe nova (${esc(R.txt)}). A palavra-passe inicial deixa de funcionar.</p>
+        <div class="full"><label for="pwn1">Nova palavra-passe</label><input id="pwn1" type="password" autocomplete="new-password" required></div>
+        <div class="full"><label for="pwn2">Repetir a nova palavra-passe</label><input id="pwn2" type="password" autocomplete="new-password" required></div>
         <p class="form-error full" role="alert"></p></form>`,
-      foot: '<button class="btn primary" type="button" data-ok>Criar administrador</button>' });
-    $('[data-close]', m.el)?.remove(); $('.modal-backdrop', m.el)?.removeAttribute('data-close');
-    const f = $('[data-fr]', m.el); const err = $('.form-error', m.el);
+      foot: '<button class="btn" type="button" data-out>Terminar sessão</button><button class="btn primary" type="button" data-ok>Guardar palavra-passe</button>' });
+    $$('[data-close]', m.el).forEach((b) => (b.matches('button') ? b.remove() : b.removeAttribute('data-close')));
+    m.el.addEventListener('keydown', (e) => { if (e.key === 'Escape') e.stopPropagation(); }, true);
+    const err = $('.form-error', m.el);
     const go = () => {
-      const v = Object.fromEntries($$('input', f).map((i) => [i.name, i.value])); err.textContent = '';
-      const nome = clean(v.nome, 60), user = clean(v.user, 30).toLowerCase();
-      if (!nome) { err.textContent = 'Indique o nome.'; return; }
-      if (!/^[a-z0-9._-]{3,30}$/.test(user)) { err.textContent = 'Utilizador: 3 a 30 letras minúsculas, números, ponto, hífen ou traço.'; return; }
-      if (!FirstRun.strong(v.p1)) { err.textContent = 'Palavra-passe fraca: mínimo 10 caracteres, com letras, números e uma maiúscula ou símbolo.'; return; }
-      if (v.p1 !== v.p2) { err.textContent = 'As palavras-passe não coincidem.'; return; }
-      const h = pwHash(v.p1); Object.assign(DB.users[0], { user, nome, hash: h }); DB.settings.adminHash = h; DB.meta = { ...(DB.meta || {}), setupDone: true };
-      Store.log('Primeira utilização: administrador criado'); Store.save();
-      sessionStorage.setItem('dpdore_msg', 'Administrador criado. Entre com o utilizador e a palavra-passe que definiu.');
-      Store.flush().finally(() => location.reload());
+      const a = $('#pwn1', m.el).value, b = $('#pwn2', m.el).value; err.textContent = '';
+      if (!R.ok(a)) { err.textContent = `Palavra-passe fraca: ${R.txt}.`; return; }
+      if (a !== b) { err.textContent = 'As palavras-passe não coincidem.'; return; }
+      const h = pwHash(a); if (h === u.hash || DEFAULT_HASHES.includes(h)) { err.textContent = 'Escolha uma palavra-passe diferente da inicial.'; return; }
+      if (u.role === 'admin' && (u.hash === DB.settings.adminHash || DEFAULT_HASHES.includes(DB.settings.adminHash))) DB.settings.adminHash = h; // a palavra-passe de administrador (elevação) passa a ser a nova
+      u.hash = h; u.mustChange = false; u.pwChangedAt = nowISO();
+      Store.log(`Palavra-passe alterada no primeiro acesso (${u.user})`); Store.save(); m.close(); UI.toast('Palavra-passe guardada. Use-a nos próximos acessos.');
     };
-    $('[data-ok]', m.el).addEventListener('click', go); f.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); go(); } });
+    $('[data-ok]', m.el).addEventListener('click', go);
+    $('[data-pwforce]', m.el).addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); go(); } });
+    $('[data-out]', m.el).addEventListener('click', () => Auth.logout());
   }
 };
 {
-  const r0 = Auth.restore.bind(Auth);
-  Auth.restore = () => { if (FirstRun.pending()) { setTimeout(() => FirstRun.open(), 50); return false; } return r0(); };
-  const l0 = Auth.login.bind(Auth);
-  Auth.login = (u, p) => (FirstRun.pending() ? 'Crie primeiro o administrador.' : l0(u, p));
+  const l0 = Auth.login.bind(Auth); Auth.login = (u, p) => { const r = l0(u, p); if (r === true && Auth.user?.mustChange) setTimeout(() => PwChange.force(), 300); return r; };
+  const r0 = Auth.restore.bind(Auth); Auth.restore = () => { const r = r0(); if (r && Auth.user?.mustChange) setTimeout(() => PwChange.force(), 600); return r; };
+  // qualquer acção enquanto a mudança está pendente volta a mostrar a janela
+  document.addEventListener('click', (e) => { if (Auth.user?.mustChange && !e.target.closest('.modal') && !$('[data-pwforce]')) PwChange.force(); }, true);
 }
 
 /* ============ 9. ARRANQUE ============ */

@@ -95,8 +95,11 @@ e abra a aplicação com internet uma vez. O sistema da sede (`sistema/`) actual
 ## 6. DPDORE (pasta `dpdore/`)
 
 - **Instalar:** abrir `…/monte-moria/dpdore/` no Chrome / Edge › ícone **Instalar** (Android: «Instalar aplicação»; iPhone: Partilhar › Adicionar ao ecrã principal).
-- **Primeira utilização em cada aparelho:** o sistema pede para criar o administrador (não há palavra-passe predefinida no código publicado).
-  Depois: Cópias de segurança › **Importar cópia** com a cópia exportada da versão local (mantendo o administrador novo, ou repondo os utilizadores da cópia).
+- **Utilizadores iniciais (em cada aparelho novo):** `admin`, `planeamento` e `survey`. As palavras-passe iniciais são entregues pelo
+  administrador — **não estão no código** (só as suas impressões digitais SHA-256). No **primeiro acesso** cada utilizador é obrigado a
+  escolher uma palavra-passe nova (a janela não se fecha sem isso); a inicial deixa de funcionar. `planeamento` edita Planeamento,
+  Viabilidade e Análise de cobertura; `survey` edita o Controlo de Survey; ambos vêem as restantes abas.
+  Depois: Cópias de segurança › **Importar cópia** com a cópia exportada da versão local.
 - **Segurança da versão publicada:** sem dados (o `js/data.js` está vazio); política de segurança de conteúdos (CSP: só scripts do próprio site,
   sem ligações a outros servidores além das fontes); sem indexação nos motores de pesquisa; palavras-passe guardadas só como impressão digital (SHA-256);
   bloqueio após 5 tentativas; sessão termina por inactividade; os dados ficam só no navegador de cada aparelho.

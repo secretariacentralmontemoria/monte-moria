@@ -23,5 +23,6 @@ O ficheiro único DPDORE_Sistema_Gestao_Operacional_V9_0.html tem o mesmo conte�
 DADOS: ficam no navegador de cada aparelho (sem limite fixo: depende do espaço livre). Passam-se entre postos com as cópias
 de segurança ou com a «Pasta das cópias» (Cópias de segurança), que é consultada no arranque.
 
-VERSÃO PUBLICADA (GitHub Pages): não contém dados nem palavra-passe predefinida. Na primeira abertura em cada aparelho
-cria-se o administrador; depois importa-se a cópia de segurança (Cópias de segurança › Importar cópia).
+VERSÃO PUBLICADA (GitHub Pages): não contém dados. Utilizadores iniciais: admin, planeamento e survey (palavras-passe entregues
+pelo administrador; no código só existem as impressões digitais). No primeiro acesso cada um é obrigado a mudar a palavra-passe.
+Depois importa-se a cópia de segurança (Cópias de segurança › Importar cópia).

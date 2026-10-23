@@ -1,16 +1,16 @@
 /* DPDORE — funcionamento sem internet (rede primeiro, com a cópia guardada como alternativa). */
-const CACHE = "dpdore-v90-08474699";
+const CACHE = "dpdore-v90-ddab6337";
 const FILES = [
   "./",
   "./index.html",
-  "./css/styles.css?v=08474699",
+  "./css/styles.css?v=ddab6337",
   "./js/vendor/chart.umd.min.js",
   "./js/vendor/xlsx.full.min.js",
   "./js/vendor/jszip.min.js",
   "./js/vendor/pptxgen.min.js",
-  "./js/data.js?v=08474699",
-  "./js/app.js?v=08474699",
-  "./js/pwa.js?v=08474699",
+  "./js/data.js?v=ddab6337",
+  "./js/app.js?v=ddab6337",
+  "./js/pwa.js?v=ddab6337",
   "./manifest.webmanifest",
   "./icons/icon-192.png",
   "./icons/icon-512.png"
