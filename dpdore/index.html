@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob:; connect-src 'self'; worker-src 'self'; manifest-src 'self'; frame-src 'self' blob: data:; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex, nofollow">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="DPDORE — Sistema de Gestão Operacional e Planeamento de Redes IP">
+  <meta name="theme-color" content="#1b2a3f">
+  <title>DPDORE — Gestão Operacional</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="stylesheet" href="css/styles.css?v=08474699">
+</head>
+<body>
+  <a class="skip-link" href="#main">Saltar para o conteúdo</a>
+
+  <!-- Ecrã de autenticação -->
+  <section class="login" id="login" aria-labelledby="loginTitle" hidden>
+    <form class="login-card" id="loginForm" novalidate>
+      <div class="login-brand">
+        <span class="brand-mark" data-logo aria-hidden="true"></span>
+        <div>
+          <h1 id="loginTitle">DPDORE</h1>
+          <p id="loginSub">Sistema de Gestão Operacional</p>
+        </div>
+      </div>
+      <label for="loginUser">Utilizador</label>
+      <input id="loginUser" name="user" autocomplete="username" required>
+      <label for="loginPass">Palavra-passe</label>
+      <input id="loginPass" name="pass" type="password" autocomplete="current-password" required>
+      <p class="form-error" id="loginError" role="alert" aria-live="assertive"></p>
+      <button class="btn primary block" type="submit">Entrar</button>
+      <p class="login-hint" id="loginHint">Primeiro acesso: utilizador admin. Altere a palavra-passe em Utilizadores.</p>
+    </form>
+  </section>
+
+  <div class="app" id="app" hidden>
+    <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
+      <div class="brand">
+        <span class="brand-mark" data-logo aria-hidden="true"></span>
+        <div class="brand-text">
+          <strong id="brandName">DPDORE</strong>
+          <small id="brandSub">Sistema de Gestão Operacional</small>
+        </div>
+      </div>
+      <nav id="nav" class="nav" aria-label="Abas"></nav>
+      <footer class="sidebar-foot">
+        <div class="who" id="whoami"></div>
+        <button class="btn ghost small" type="button" data-action="goto" data-view="backup" title="Cópias de segurança"><span aria-hidden="true">⛁</span><span class="lbl">Cópias de segurança</span></button>
+        <button class="btn ghost small" type="button" data-action="logout" title="Terminar sessão"><span aria-hidden="true">⎋</span><span class="lbl">Terminar sessão</span></button>
+      </footer>
+    </aside>
+    <button class="scrim" type="button" id="scrim" data-action="close-menu" aria-label="Fechar menu" hidden></button>
+
+    <div class="shell">
+      <header class="topbar">
+        <button class="icon-btn menu-toggle" id="menuToggle" type="button" data-action="toggle-menu" aria-label="Abrir menu" aria-controls="sidebar" aria-expanded="false">☰</button>
+        <div class="crumbs">
+          <h2 id="viewTitle">Painel</h2>
+          <p id="viewSub"></p>
+        </div>
+        <div class="top-actions">
+          <button class="admin-pill" id="adminPill" type="button" aria-label="Modo administrador activo" hidden></button>
+          <button class="btn small" type="button" data-action="export-view" aria-label="Exportar dados desta aba"><span aria-hidden="true">⤓</span><span class="lbl">Exportar</span></button>
+          <button class="icon-btn" type="button" data-action="goto" data-view="alerts" aria-label="Alertas">
+            <span aria-hidden="true">◔</span><span class="count" id="alertCount" hidden></span>
+          </button>
+          <button class="icon-btn" type="button" data-action="toggle-theme" aria-label="Alternar tema claro/escuro">◐</button>
+        </div>
+      </header>
+      <main id="main" class="main" tabindex="-1"></main>
+    </div>
+  </div>
+
+  <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+  <input type="file" id="filePicker" hidden>
+  <script src="js/vendor/chart.umd.min.js"></script>
+  <script src="js/vendor/xlsx.full.min.js"></script>
+  <script src="js/vendor/jszip.min.js"></script>
+  <script src="js/vendor/pptxgen.min.js"></script>
+  <script src="js/data.js?v=08474699"></script>
+  <script src="js/app.js?v=08474699"></script>
+  <script src="js/pwa.js?v=08474699"></script>
+</body>
+</html>

@@ -13,6 +13,7 @@ Site estático pronto para o **GitHub Pages**:
 │   ├── manifest.webmanifest  sw.js  logo.png  icons/  vendor/
 │   └── GUIA.md        (versão convertida para funcionar a partir do iOS 12)
 ├── frota/             Frota Ebenézer — gestão das embarcações (instalável, funciona sem internet; não aparece na página inicial)
+├── dpdore/            DPDORE V9.0 — Sistema de Gestão Operacional (instalável; sem dados nem palavra-passe predefinida; não aparece na página inicial)
 ├── .nojekyll          o GitHub publica os ficheiros tal como estão
 └── .gitignore         impede o envio de cópias de segurança e exportações
 ```
@@ -31,6 +32,7 @@ Site estático pronto para o **GitHub Pages**:
    - `https://secretariacentralmontemoria.github.io/monte-moria/sistema/` (sistema da sede)
    - `https://secretariacentralmontemoria.github.io/monte-moria/congregacao/` (aplicação das congregações)
    - `https://secretariacentralmontemoria.github.io/monte-moria/frota/` (Frota Ebenézer — enviar o link só a quem a usa)
+   - `https://secretariacentralmontemoria.github.io/monte-moria/dpdore/` (DPDORE — enviar o link só a quem o usa)
 
 Repositório: https://github.com/secretariacentralmontemoria/monte-moria (público). Com git: `git add . && git commit -m "Actualização" && git push`.
 
@@ -89,3 +91,13 @@ Substitua os ficheiros alterados (Upload files) e faça *Commit*. Para os telem�
 das congregações, mude o nome da cache em `congregacao/sw.js` (ex.: `mm-congregacao-v5` → `mm-congregacao-v6`)
 e abra a aplicação com internet uma vez. O sistema da sede (`sistema/`) actualiza-se sozinho quando abre com internet
 (o nome da cache em `sistema/sw.js` e os `?v=` em `sistema/index.html` mudam em cada versão).
+
+## 6. DPDORE (pasta `dpdore/`)
+
+- **Instalar:** abrir `…/monte-moria/dpdore/` no Chrome / Edge › ícone **Instalar** (Android: «Instalar aplicação»; iPhone: Partilhar › Adicionar ao ecrã principal).
+- **Primeira utilização em cada aparelho:** o sistema pede para criar o administrador (não há palavra-passe predefinida no código publicado).
+  Depois: Cópias de segurança › **Importar cópia** com a cópia exportada da versão local (mantendo o administrador novo, ou repondo os utilizadores da cópia).
+- **Segurança da versão publicada:** sem dados (o `js/data.js` está vazio); política de segurança de conteúdos (CSP: só scripts do próprio site,
+  sem ligações a outros servidores além das fontes); sem indexação nos motores de pesquisa; palavras-passe guardadas só como impressão digital (SHA-256);
+  bloqueio após 5 tentativas; sessão termina por inactividade; os dados ficam só no navegador de cada aparelho.
+- **Nunca** carregue para o GitHub cópias de segurança (`DPDORE_copia_*.json`), exportações Excel nem o ficheiro local `DPDORE_Sistema_Gestao_Operacional_V9_0.html` (contém os dados iniciais).

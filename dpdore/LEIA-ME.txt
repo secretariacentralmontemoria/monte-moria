@@ -1,0 +1,27 @@
+DPDORE — Sistema de Gestão Operacional V9.0 (ficheiros separados, instalável)
+
+index.html             estrutura da página (HTML semântico; sem estilos nem scripts embutidos)
+css/styles.css         estilos (variáveis :root, modo claro/escuro, mobile-first, estados :hover/:focus/:active/:disabled)
+js/vendor/             bibliotecas: Chart.js, SheetJS, JSZip, PptxGenJS
+js/data.js             dados iniciais
+js/app.js              aplicação. Novidades da V9.0 (secções 11q–11w):
+                         11q  tabelas: filtro avançado em cada coluna e colunas configuráveis (todas as listas); sequência do survey
+                         11r  importação (obrigatórios por aba, correspondências memorizadas, duplicados) e exportação
+                              (ordem das colunas, exportações resumidas com cores, exportação em massa por fornecedor)
+                         11s  stock: links possíveis por regras (Ericsson, Huawei, FWA, GPON, armazém Talatona)
+                         11t  P2P-FH: Huawei / Ericsson e lista de rádios
+                         11u  gráficos (largura das colunas, tamanho, origem dos dados), cores dos serviços, performance dos empreiteiros
+                         11v  separadores da apresentação, organigrama livre e visibilidade, painel configurável, abas novas e duplicadas
+                         11w  pasta das cópias (arranque), duplicados no restauro, partilhar / instalar
+js/pwa.js              registo do modo sem internet
+sw.js                  service worker (funciona sem internet; com internet carrega sempre a versão mais recente)
+manifest.webmanifest   instalação como aplicação (ícones em icons/)
+
+INSTALAR: publique esta pasta (GitHub Pages, SharePoint ou servidor https) e abra o endereço no Chrome / Edge → «Instalar».
+No telemóvel: Android → «Instalar aplicação»; iPhone (Safari) → Partilhar › Adicionar ao ecrã principal.
+O ficheiro único DPDORE_Sistema_Gestao_Operacional_V9_0.html tem o mesmo conteúdo e funciona aberto directamente no computador.
+DADOS: ficam no navegador de cada aparelho (sem limite fixo: depende do espaço livre). Passam-se entre postos com as cópias
+de segurança ou com a «Pasta das cópias» (Cópias de segurança), que é consultada no arranque.
+
+VERSÃO PUBLICADA (GitHub Pages): não contém dados nem palavra-passe predefinida. Na primeira abertura em cada aparelho
+cria-se o administrador; depois importa-se a cópia de segurança (Cópias de segurança › Importar cópia).

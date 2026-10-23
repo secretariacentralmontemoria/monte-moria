@@ -1,0 +1,32 @@
+{
+  "name": "DPDORE — Sistema de Gestão Operacional",
+  "short_name": "DPDORE",
+  "description": "Planeamento de redes IP e gestão operacional. Os dados ficam neste aparelho; funciona sem internet.",
+  "id": "./",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#eef1f5",
+  "theme_color": "#1b2a3f",
+  "lang": "pt",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

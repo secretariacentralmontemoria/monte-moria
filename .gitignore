@@ -13,3 +13,11 @@ Frota_Ebenezer_*.json
 Frota_Ebenezer_*.xlsx
 Frota_Ebenezer_*.png
 Frota_Ebenezer_offline.html
+# DPDORE: cópias de segurança, exportações e a versão local com dados
+DPDORE_*.json
+DPDORE_*.html
+DPDORE_*.zip
+dpdore/**/*.json
+!dpdore/manifest.webmanifest
+*.xlsx
+*.dpkey
